@@ -1,0 +1,43 @@
+$letters: 8;
+
+.animated-link {
+  transform: translate(0%, 0%);
+  transition: all 0.2s ease-in-out;
+
+  span {
+    display: inline-block;
+    min-width: 0.3em;
+    transition: 0.25s cubic-bezier(0.5, -1, 0.5, 2);
+    opacity: 0;
+    transform: translate(0, -20px);
+  }
+
+  &::before {
+    content: attr(data-text);
+    position: absolute;
+    width: 100%;
+    transition: 0.25s cubic-bezier(0.5, -1, 0.5, 2);
+    left: 0;
+    opacity: 1;
+    transform: translate(0, 0px);
+  }
+
+  &:hover,
+  &:focus {
+    transform: scale(1.05);
+    &::before {
+      opacity: 0;
+      transform: translate(0, 20px);
+    }
+    span {
+      opacity: 1;
+      transform: translate(0, 0);
+    }
+
+    @for $i from 1 through $letters {
+      span:nth-child(#{$i}) {
+        transition-delay: 0.025s * $i;
+      }
+    }
+  }
+}

@@ -1,6 +1,8 @@
+import cx from "classnames";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-import "./globals.css";
+import Header from "./components/header/Header";
+import "./globals.scss";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -17,7 +19,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={inter.className}>{children}</body>
+      <body className={cx(inter.className)}>
+        <Header />
+        {children}
+      </body>
     </html>
   );
 }
