@@ -9,6 +9,7 @@ const config: Config = {
   theme: {
     extend: {
       backgroundImage: {
+        "gradient-linear": "linear-gradient(180deg, hsla(0,0%,100%,0), #fff)",
         "gradient-conic":
           "conic-gradient( from 180deg at 50% 50%, #0aefff -69.37deg, #0f83ff 31.88deg, #b056e7 120deg, #ff9966 204.37deg, #0aefff 290.63deg, #0f83ff 391.87deg)",
       },
@@ -17,14 +18,16 @@ const config: Config = {
         xxxs: "375px",
         xxs: "390px",
         xs: "412px",
+        "surface-duo": "540px",
+        "ipad-mini": "760px",
         sm: "810px",
         md: "1280px",
         lg: "1366px",
         lg2: "1440px",
         lg3: "1536px",
         lg4: "1600px",
-        lg5: "1920px",
-        lg6: "2560px",
+        lg5: "1900px",
+        lg6: "2300px",
       },
       colors: {
         gray: {

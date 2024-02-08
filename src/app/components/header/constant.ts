@@ -1,4 +1,4 @@
-import { NavigationItem } from "./types";
+import { NavigationItem } from "@/shared-resources/contracts/globalTypes";
 
 export const NAVIGATION_ITEMS: Array<NavigationItem> = [
   { href: "#work", title: "Work" },
