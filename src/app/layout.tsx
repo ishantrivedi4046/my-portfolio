@@ -14,14 +14,27 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
   children,
+  intro,
+  work,
 }: Readonly<{
   children: React.ReactNode;
+  intro: React.ReactNode;
+  work: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className={cx(inter.className)}>
+    <html lang="en" className="scroll-smooth">
+      <body
+        className={cx(
+          inter.className,
+          "flex flex-col items-center overflow-x-clip"
+        )}
+      >
         <Header />
-        {children}
+        <div className="w-100% lg4:max-w-[60%] lg2:max-w-[70%] max-w-[82%] flex flex-col justify-center items-stretch">
+          {intro}
+          {work}
+          {children}
+        </div>
       </body>
     </html>
   );
