@@ -16,10 +16,12 @@ export default function RootLayout({
   children,
   intro,
   work,
+  benefits,
 }: Readonly<{
   children: React.ReactNode;
   intro: React.ReactNode;
   work: React.ReactNode;
+  benefits: React.ReactNode;
 }>) {
   return (
     <html lang="en" className="scroll-smooth">
@@ -30,11 +32,12 @@ export default function RootLayout({
         )}
       >
         <Header />
-        <div className="w-100% lg4:max-w-[60%] lg2:max-w-[70%] max-w-[82%] flex flex-col justify-center items-stretch">
+        <div className="w-full lg4:max-w-[60%] lg2:max-w-[70%] max-w-[82%] flex flex-col justify-center items-stretch">
           {intro}
           {work}
           {children}
         </div>
+        <div className="w-full">{benefits}</div>
       </body>
     </html>
   );

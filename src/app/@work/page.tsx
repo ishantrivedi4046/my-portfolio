@@ -4,7 +4,7 @@ import { DEVSLANE_SKILLS, GEEKS_FOR_GEEKS_SKILLS } from "./constant";
 
 const WorkPage = () => {
   return (
-    <div className="flex flex-col items-center py-[8.75rem]" id="work">
+    <div className="flex flex-col items-center pt-[8.75rem] pb-24" id="work">
       <AnimatedText
         textNode={
           <div id="work-text">
@@ -26,7 +26,7 @@ const WorkPage = () => {
           containerId="devslane__container"
           wrapClassnames="w-[80%]"
         >
-          <div className="w-full h-[32rem] justify-between flex rounded-3xl bg-gradient-to-br from-red-100 to-orange-100 px-8 py-12 text-white pointer-events-none">
+          <div className="w-full h-[32rem] justify-between flex rounded-2xl bg-gradient-to-br from-red-100 to-orange-100 px-8 py-12 text-white pointer-events-none">
             <div className="h-full w-1/3 font-semibold text-lg text-right">
               2021 - Present
             </div>
@@ -45,7 +45,7 @@ const WorkPage = () => {
                 {DEVSLANE_SKILLS.map((skill) => (
                   <div
                     key={skill}
-                    className="font-medium px-4 py-2 border-white border-[2px] rounded-3xl flex justify-center items-center"
+                    className="font-medium px-4 py-2 border-white border-[2px] rounded-2xl flex justify-center items-center"
                   >
                     {skill}
                   </div>
@@ -59,7 +59,7 @@ const WorkPage = () => {
           containerId="geeksforgeeks__container"
           wrapClassnames="w-[80%]"
         >
-          <div className="w-full h-[32rem] flex justify-between text-white rounded-3xl bg-gradient-to-br from-green-100 px-8 py-12 to-green-900 p-4 pointer-events-none">
+          <div className="w-full h-[32rem] flex justify-between text-white rounded-2xl bg-gradient-to-br from-green-100 px-8 py-12 to-green-900 p-4 pointer-events-none">
             <div className="h-full w-1/3 font-semibold text-lg text-right">
               Dec 2019 - Apr 2020
             </div>
@@ -77,7 +77,7 @@ const WorkPage = () => {
                 {GEEKS_FOR_GEEKS_SKILLS.map((skill) => (
                   <div
                     key={skill}
-                    className="font-medium px-4 py-2 border-white border-[2px] rounded-3xl flex justify-center items-center"
+                    className="font-medium px-4 py-2 border-white border-[2px] rounded-2xl flex justify-center items-center"
                   >
                     {skill}
                   </div>

@@ -9,6 +9,9 @@ const config: Config = {
   theme: {
     extend: {
       backgroundImage: {
+        "gradient-linear-text": "linear-gradient(58deg,#b94cdb,#fe815e)",
+        "gradient-radial":
+          "radial-gradient(circle farthest-side at 50% 50%, rgba(91,136,204,.2), rgba(91,136,204,0))",
         "gradient-linear": "linear-gradient(180deg, hsla(0,0%,100%,0), #fff)",
         "gradient-conic":
           "conic-gradient( from 180deg at 50% 50%, #0aefff -69.37deg, #0f83ff 31.88deg, #b056e7 120deg, #ff9966 204.37deg, #0aefff 290.63deg, #0f83ff 391.87deg)",
@@ -32,6 +35,9 @@ const config: Config = {
       colors: {
         gray: {
           200: "#f9f8f8",
+          300: "#d1caca",
+          "text-dark": "#ecedee",
+          dark: "#262626",
         },
         red: {
           100: "rgba(248, 0, 0, 0.7)",
