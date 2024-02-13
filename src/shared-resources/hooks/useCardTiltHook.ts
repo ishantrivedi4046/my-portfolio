@@ -44,13 +44,11 @@ export const useCardTiltHook = (
   };
 
   const handleMouseEnter = () => {
-    console.log("Mouse Enter");
     setMouseEnter(true);
     if (container) container?.classList?.add?.("container--active");
   };
 
   const handleMouseLeave = () => {
-    console.log("Mouse Leave");
     setMouseEnter(false);
     defaultStates();
   };
