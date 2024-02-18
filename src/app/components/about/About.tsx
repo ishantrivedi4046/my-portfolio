@@ -27,12 +27,12 @@ const About = () => {
           },
         }}
       >
-        <div className="w-[28vw] h-[80vh] bg-gray-200 relative overflow-clip">
+        <div className="w-[35rem] h-[44rem] bg-gray-200 relative overflow-clip">
           <Image
             src={close}
             alt="close icon"
             onClick={handleModalClose}
-            className="w-6 h-6 cursor-pointer absolute top-6 right-6"
+            className="w-6 h-6 cursor-pointer absolute top-6 right-6 z-10"
           />
           <Image
             src={myPic}

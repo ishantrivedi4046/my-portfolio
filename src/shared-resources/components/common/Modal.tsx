@@ -24,14 +24,14 @@ const ModalComponent: React.FC<ModalProps> = ({
       ...(style?.content ?? {}),
     },
     overlay: {
-      backgroundColor: "rgba(104, 102, 102, 0.64)",
+      backgroundColor: "rgba(104, 102, 102, 0.9)",
+      zIndex: 1000,
       ...(style?.overlay ?? {}),
     },
   };
 
   return (
     <Modal isOpen={isOpen} onRequestClose={closeModal} style={customStyles}>
-      <div></div>
       {children}
     </Modal>
   );
