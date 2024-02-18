@@ -1,4 +1,4 @@
-import AnimatedText from "@/shared-resources/animated/text/AnimatedText";
+import AnimatedText from "@/shared-resources/components/animated/text/AnimatedText";
 import Image from "next/image";
 import code from "../../../public/code.png";
 import responsiveDesign from "../../../public/responsive-design.png";

@@ -1,5 +1,6 @@
-import AnimatedLink from "@/shared-resources/animated/link/AnimatedLink";
+import AnimatedLink from "@/shared-resources/components/animated/link/AnimatedLink";
 import { uniqueId } from "lodash";
+import About from "../about/About";
 import { NAVIGATION_ITEMS } from "./constant";
 
 const Header = () => {
@@ -10,6 +11,7 @@ const Header = () => {
           {NAVIGATION_ITEMS.map((props) => (
             <AnimatedLink {...props} key={uniqueId()} />
           ))}
+          <About />
         </div>
         <div className="h-full flex items-center font-medium sm:hidden text-lg">
           Ishan Trivedi

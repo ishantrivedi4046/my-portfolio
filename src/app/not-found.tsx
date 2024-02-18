@@ -1,4 +1,4 @@
-import AnimatedLink from "@/shared-resources/animated/link/AnimatedLink";
+import AnimatedLink from "@/shared-resources/components/animated/link/AnimatedLink";
 
 const NotFoundPage = () => {
   return (
