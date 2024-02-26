@@ -3,6 +3,7 @@ import AnimatedLink from "@/shared-resources/components/animated/link/AnimatedLi
 import { uniqueId } from "lodash";
 import { useEffect } from "react";
 import About from "../about/About";
+import Contact from "../contact/Contact";
 import { NAVIGATION_ITEMS } from "./constant";
 import "./header.styles.scss";
 
@@ -41,6 +42,7 @@ const Header = () => {
             <AnimatedLink {...props} key={uniqueId()} />
           ))}
           <About />
+          <Contact />
         </div>
         <div className="h-full flex items-center font-medium sm:hidden text-lg">
           Ishan Trivedi
