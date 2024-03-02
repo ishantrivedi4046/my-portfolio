@@ -13,7 +13,7 @@ const WorkPage = () => {
         }
         observeElementId="work-text"
       />
-      <div className="w-full flex flex-col items-center py-16 gap-12">
+      <div className="w-full flex flex-col items-center py-16 mt-10 gap-12">
         <AnimatedCard
           observedElementId="hidden__element"
           containerId="hidden__container"

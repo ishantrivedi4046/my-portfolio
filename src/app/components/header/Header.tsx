@@ -36,7 +36,7 @@ const Header = () => {
       className="w-full h-12 sticky top-0 justify-center flex bg-white z-50 bg-opacity-60"
       id="header"
     >
-      <div className="sm:w-[60%] w-[75%]  h-full border-b-[1px] border-b-gray-300 flex justify-center">
+      <div className="sm:w-[60%] w-[75%] h-full border-b-[1px] border-b-gray-300 flex justify-center">
         <div className="h-full items-center gap-8 font-medium none sm:flex hidden">
           {NAVIGATION_ITEMS.map((props) => (
             <AnimatedLink {...props} key={uniqueId()} />
