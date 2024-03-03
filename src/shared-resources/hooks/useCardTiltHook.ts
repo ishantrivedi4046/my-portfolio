@@ -17,7 +17,6 @@ export const useCardTiltHook = (
   const [height, setHeight] = useState<number>(0);
   const [container, setContainer] = useState<any>();
   const [oberservedElement, setObservedElement] = useState<any>();
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [mouseEnter, setMouseEnter] = useState<boolean>(false);
 
   const setProperty = (p: string, v: string | number) => {

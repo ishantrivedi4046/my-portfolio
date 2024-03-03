@@ -6,6 +6,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import close from "../../../../public/close.svg";
+import github from "../../../../public/github.svg";
 import gitlab from "../../../../public/gitlab.svg";
 import instagram from "../../../../public/instagram.svg";
 import linkedIn from "../../../../public/linkedin.svg";
@@ -84,6 +85,9 @@ const Contact = () => {
             </Link>
             <Link href={"https://gitlab.com/ishantrivedi4046"} target="_blank">
               <Image src={gitlab} alt="gitlab" className="cursor-pointer" />
+            </Link>
+            <Link href={"https://github.com/ishantrivedi4046"} target="_blank">
+              <Image src={github} alt="github" className="cursor-pointer" />
             </Link>
           </div>
         </div>
