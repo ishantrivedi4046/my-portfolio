@@ -7,9 +7,9 @@ import Link from "next/link";
 import { useState } from "react";
 import close from "../../../../public/close.svg";
 import github from "../../../../public/github.svg";
-import gitlab from "../../../../public/gitlab.svg";
 import instagram from "../../../../public/instagram.svg";
 import linkedIn from "../../../../public/linkedin.svg";
+import npm from "../../../../public/npm.svg";
 import myPic from "../../../../public/potfolio.png";
 import sendEmail from "../../../../public/send-email.svg";
 
@@ -83,8 +83,11 @@ const Contact = () => {
             >
               <Image src={linkedIn} alt="linkedIn" className="cursor-pointer" />
             </Link>
-            <Link href={"https://gitlab.com/ishantrivedi4046"} target="_blank">
-              <Image src={gitlab} alt="gitlab" className="cursor-pointer" />
+            <Link
+              href={"https://www.npmjs.com/~ishantrivedi4046"}
+              target="_blank"
+            >
+              <Image src={npm} alt="npm" className="cursor-pointer" />
             </Link>
             <Link href={"https://github.com/ishantrivedi4046"} target="_blank">
               <Image src={github} alt="github" className="cursor-pointer" />
