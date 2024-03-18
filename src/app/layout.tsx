@@ -17,11 +17,13 @@ export default function RootLayout({
   intro,
   work,
   benefits,
+  expertise,
 }: Readonly<{
   children: React.ReactNode;
   intro: React.ReactNode;
   work: React.ReactNode;
   benefits: React.ReactNode;
+  expertise: React.ReactNode;
 }>) {
   return (
     <html lang="en" className="scroll-smooth">
@@ -37,7 +39,10 @@ export default function RootLayout({
           {work}
           {children}
         </div>
-        <div className="w-full">{benefits}</div>
+        <div className="w-full">
+          {expertise}
+          {benefits}
+        </div>
       </body>
     </html>
   );

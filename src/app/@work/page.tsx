@@ -1,5 +1,5 @@
-import AnimatedCard from "@/shared-resources/animated/card/AnimatedCard";
-import AnimatedText from "@/shared-resources/animated/text/AnimatedText";
+import AnimatedCard from "@/shared-resources/components/animated/card/AnimatedCard";
+import AnimatedText from "@/shared-resources/components/animated/text/AnimatedText";
 import { DEVSLANE_SKILLS, GEEKS_FOR_GEEKS_SKILLS } from "./constant";
 
 const WorkPage = () => {
@@ -13,7 +13,7 @@ const WorkPage = () => {
         }
         observeElementId="work-text"
       />
-      <div className="w-full flex flex-col items-center py-16 gap-12">
+      <div className="w-full flex flex-col items-center py-16 mt-10 gap-12">
         <AnimatedCard
           observedElementId="hidden__element"
           containerId="hidden__container"

@@ -3,6 +3,7 @@ $letters: 10;
 .animated-link {
   transform: translate(0%, 0%);
   transition: all 0.2s ease-in-out;
+  cursor: pointer;
 
   span {
     display: inline-block;
