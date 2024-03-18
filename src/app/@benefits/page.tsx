@@ -70,7 +70,7 @@ const Benefits = () => {
             className="w-[45%]"
           />
         </div>
-        <div className="w-[34rem] h-[20rem] rounded-2xl overflow-y-clip items-start border border-white bg-black flex flex-col justify-end gap-6 pl-16 pt-16">
+        <div className="w-[34rem] h-[20rem] rounded-2xl overflow-hidden items-start border border-white bg-black flex flex-col justify-end gap-6 pl-16 pt-16">
           <div className="text-3xl text-start">Clean, efficient code.</div>
           <div className="bg-gray-dark rounded-l-2xl">
             <Image src={code} alt="code dummy image" />
