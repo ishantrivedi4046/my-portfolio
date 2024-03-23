@@ -22,6 +22,8 @@ const page = () => {
           <Image
             src={myPic}
             alt="Picture of the author"
+            priority
+            placeholder="blur"
             className="z-20 rounded-2xl sm:w-[31.25rem] w-[20rem]"
           />
         </div>
