@@ -23,6 +23,10 @@ const config: Config = {
         },
       },
       backgroundImage: {
+        "gradient-project-one":
+          "linear-gradient(45deg, #9862f0 0%, #3dc5be 100%)",
+        "gradient-project-two":
+          "linear-gradient(45deg, #f4ba24 0%, #ed5456 100%)",
         "gradient-linear-text": "linear-gradient(58deg,#b94cdb,#fe815e)",
         "gradient-radial":
           "radial-gradient(circle farthest-side at 50% 50%, rgba(91,136,204,.2), rgba(91,136,204,0))",

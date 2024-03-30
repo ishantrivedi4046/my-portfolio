@@ -10,13 +10,17 @@ import "swiper/css/pagination";
 import "./styles.scss";
 
 // import required modules
-import { ReactNode } from "react";
+import { useState } from "react";
 import { EffectCoverflow, Pagination } from "swiper/modules";
+import Slide from "./Slide";
+import { CoverFlowSlideType } from "./types";
 
 interface CoverFlowSliderProps {
-  items: ReactNode[];
+  items: CoverFlowSlideType[];
 }
+
 const CoverFlowSlider: React.FC<CoverFlowSliderProps> = ({ items }) => {
+  const [activeSlide, setActiveSlide] = useState<number>(0);
   return (
     <>
       <Swiper
@@ -24,18 +28,15 @@ const CoverFlowSlider: React.FC<CoverFlowSliderProps> = ({ items }) => {
         grabCursor={true}
         centeredSlides={true}
         slidesPerView={"auto"}
-        coverflowEffect={{
-          rotate: 50,
-          stretch: 0,
-          depth: 100,
-          modifier: 1,
-          slideShadows: true,
-        }}
         pagination={true}
+        coverflowEffect={{ rotate: 65 }}
         modules={[EffectCoverflow, Pagination]}
+        onActiveIndexChange={(s) => setActiveSlide(s?.activeIndex)}
       >
-        {items.map((item) => (
-          <SwiperSlide>{item}</SwiperSlide>
+        {items.map((item, idx) => (
+          <SwiperSlide>
+            <Slide {...item} activeSlide={idx === activeSlide} />
+          </SwiperSlide>
         ))}
       </Swiper>
     </>
