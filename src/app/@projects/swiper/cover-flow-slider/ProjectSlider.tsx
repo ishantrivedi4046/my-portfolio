@@ -12,7 +12,7 @@ import "./styles.scss";
 // import required modules
 import { useState } from "react";
 import { EffectCoverflow, Pagination } from "swiper/modules";
-import Slide from "./Slide";
+import Slide from "./ProjectSlide";
 import { CoverFlowSlideType } from "./types";
 
 interface CoverFlowSliderProps {
@@ -34,7 +34,7 @@ const CoverFlowSlider: React.FC<CoverFlowSliderProps> = ({ items }) => {
         onActiveIndexChange={(s) => setActiveSlide(s?.activeIndex)}
       >
         {items.map((item, idx) => (
-          <SwiperSlide>
+          <SwiperSlide key={idx}>
             <Slide {...item} activeSlide={idx === activeSlide} />
           </SwiperSlide>
         ))}
