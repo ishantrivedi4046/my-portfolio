@@ -1,12 +1,14 @@
 import { ReactNode } from "react";
 
 export interface DetailsComponentConfig {
-  video: string;
+  videoUrl: string;
   title: string;
   desc: string;
   features: Array<string>;
   tech: Array<string>;
   confidential: boolean;
+  githubLink?: string;
+  liveUrl?: string;
 }
 
 export type CoverFlowSlideType = {
