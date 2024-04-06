@@ -9,8 +9,8 @@ const config: Config = {
   theme: {
     extend: {
       animation: {
-        "infinite-scroll-left": "infinite-scroll-left 25s linear infinite",
-        "infinite-scroll-right": "infinite-scroll-right 25s linear infinite",
+        "infinite-scroll-left": "infinite-scroll-left 75s linear infinite",
+        "infinite-scroll-right": "infinite-scroll-right 75s linear infinite",
       },
       keyframes: {
         "infinite-scroll-left": {
@@ -18,7 +18,7 @@ const config: Config = {
           to: { transform: "translateX(-100%)" },
         },
         "infinite-scroll-right": {
-          from: { transform: "translateX(-100%)" },
+          from: { transform: "translateX(-50%)" },
           to: { transform: "translateX(0)" },
         },
       },
