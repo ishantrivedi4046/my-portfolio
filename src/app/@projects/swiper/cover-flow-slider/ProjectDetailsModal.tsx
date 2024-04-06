@@ -1,7 +1,9 @@
 import Modal from "@/shared-resources/components/common/Modal";
 import cx from "classnames";
+import Image from "next/image";
 import Link from "next/link";
 import { Suspense } from "react";
+import info from "../../../../../public/info.svg";
 import { DetailsComponentConfig } from "./types";
 
 interface ProjectDetailsModalProps extends DetailsComponentConfig {
@@ -47,7 +49,7 @@ const ProjectDetailsModal: React.FC<ProjectDetailsModalProps> = ({
           />
         </Suspense>
         <div className="flex flex-col justify-center items-center pt-16">
-          <div className="text-5xl font-medium">{title}</div>
+          <div className="text-5xl font-medium flex">{title}</div>
           <div className="text-gray-500 mt-6 w-[60%] text-center">{desc}</div>
           <div className="flex gap-2">
             {!!githubLink && (
@@ -96,11 +98,16 @@ const ProjectDetailsModal: React.FC<ProjectDetailsModalProps> = ({
               ))}
             </div>
           </div>
-          <div
-            className={cx("flex w-full items-center px-8 py-8 justify-end", {
-              "justify-between": confidential,
-            })}
-          >
+          {confidential && (
+            <div className="my-6 flex w-full items-center justify-center">
+              <Image src={info} alt="info" />
+              <span className="ml-2">
+                The live site for this project cannot be accessed due to
+                confidentiality agreements with the client.{" "}
+              </span>
+            </div>
+          )}
+          <div className={cx("flex w-full items-center px-8 py-8 justify-end")}>
             <div className="text-gray-500">
               Press{" "}
               <span className="bg-gray-100 rounded-md px-2 py-1">esc</span> to
