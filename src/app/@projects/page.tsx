@@ -5,7 +5,7 @@ import ProjectSlider from "./swiper/cover-flow-slider/ProjectSlider";
 const ProjectsPage = () => {
   return (
     <div
-      className="flex flex-col items-center pt-[8.75rem] pb-24"
+      className="flex flex-col max-w-[100vw] overflow-x-hidden items-center pt-[8.75rem] pb-24"
       id="projects"
     >
       <AnimatedText

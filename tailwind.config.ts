@@ -15,7 +15,7 @@ const config: Config = {
       keyframes: {
         "infinite-scroll-left": {
           from: { transform: "translateX(0)" },
-          to: { transform: "translateX(-100%)" },
+          to: { transform: "translateX(-50%)" },
         },
         "infinite-scroll-right": {
           from: { transform: "translateX(-50%)" },

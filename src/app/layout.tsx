@@ -36,7 +36,7 @@ export default function RootLayout({
         )}
       >
         <Header />
-        <div className="w-full lg4:max-w-[60%] lg2:max-w-[70%] max-w-[82%] flex flex-col justify-center items-stretch">
+        <div className="w-full lg4:max-w-[60%] lg2:max-w-[70%] sm:max-w-[64%] max-w-[82%] flex flex-col justify-center items-stretch">
           {intro}
           {work}
           {children}
