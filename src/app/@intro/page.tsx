@@ -3,7 +3,7 @@ import myPic from "../../../public/potfolio.png";
 
 const page = () => {
   return (
-    <div className="h-screen flex flex-col justify-center items-stretch">
+    <div className="h-svh flex flex-col justify-center items-stretch">
       <div className="flex sm:flex-row flex-col sm:h-fit xs:h-[65%] surface-duo:h-[80%] ipad-mini:h-[60%] h-full lg6:justify-center xs:justify-between justify-evenly items-center relative clip-path">
         <div className="sm:w-[50%] ipad-mini:w-[70%] w-full flex items-center justify-end ">
           <div className="flex flex-col items-end">
@@ -27,7 +27,7 @@ const page = () => {
             className="z-20 rounded-2xl sm:w-[31.25rem] w-[20rem]"
           />
         </div>
-        <div className="absolute bottom-0 z-20 h-[40%] bg-gradient-linear w-[125%]" />
+        <div className="absolute bottom-0 z-20 h-[40%] bg-gradient-linear w-svw" />
       </div>
     </div>
   );

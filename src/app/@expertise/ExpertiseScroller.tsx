@@ -30,7 +30,7 @@ const ExpertiseScroller = () => {
           {EXPERTISE_ROW_ONE.map(({ image, alt }) => (
             <li
               key={alt}
-              className="flex flex-col items-center gap-4 justify-center w-64 h-64 bg-white rounded-xl drop-shadow-md "
+              className="flex flex-col items-center gap-4 justify-center sm:w-64 sm:h-64 w-48 h-48 bg-white rounded-xl drop-shadow-md "
             >
               <Image src={image} alt={alt} />
               <div className=" text-xl">{alt}</div>
@@ -43,7 +43,7 @@ const ExpertiseScroller = () => {
           {EXPERTISE_ROW_TWO.map(({ image, alt }) => (
             <li
               key={alt}
-              className="flex flex-col items-center gap-4 justify-center w-64 h-64 bg-white rounded-xl drop-shadow-md"
+              className="flex flex-col items-center gap-4 justify-center sm:w-64 sm:h-64 w-48 h-48 bg-white rounded-xl drop-shadow-md"
             >
               <Image src={image} alt={alt} />
               <div className=" text-xl">{alt}</div>
