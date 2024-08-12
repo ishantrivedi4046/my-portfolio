@@ -1,14 +1,17 @@
+import Image from "next/image";
+import emotagCommit from "../../../public/emotagCommits.png";
+import portfolioWeb from "../../../public/portfolioWeb.png";
 import { CoverFlowSlideType } from "./swiper/cover-flow-slider/types";
 
 export const PROJECTS: CoverFlowSlideType[] = [
   {
     backgroundGradiant: "bg-gradient-project-one",
-    summary: "Slide 1",
+    summary: <Image src={portfolioWeb} alt="portfolio-web" />,
     details: {
       videoUrl:
         "https://ishan-trivedi-portfolio.s3.amazonaws.com/videos/emotag-commits.mp4",
-      title: "Emotag Commits",
-      desc: "A CLI for creating commits with Git Emojis \n Let's celebrate each and every commit with a corresponding emoji!",
+      title: "Portfolio Website",
+      desc: "Loosely designed in Figma and coded in Visual Studio Code by yours truly. Built with Next.js and Tailwind CSS, deployed with Vercel.",
       features: [
         "Easy and simple to use.",
         "Generates emojified commits with a series of prompts.",
@@ -17,18 +20,20 @@ export const PROJECTS: CoverFlowSlideType[] = [
         "Preview commit errors or success in colors.",
       ],
       tech: [
-        "Typescript",
-        "@clack/prompts",
-        "semantic-release",
-        "Github Action",
+        "TypeScript",
+        "JavaScript",
+        "Next.js",
+        "Swiper",
+        "TailwindCSS",
+        "SCSS",
       ],
-      githubLink: "https://github.com/ishantrivedi4046/emotag-commits",
+      githubLink: "https://github.com/ishantrivedi4046/my-portfolio",
       confidential: false,
     },
   },
   {
     backgroundGradiant: "bg-gradient-project-two",
-    summary: "Slide 2",
+    summary: <Image src={emotagCommit} alt="emotag-commit" />,
     details: {
       videoUrl:
         "https://ishan-trivedi-portfolio.s3.amazonaws.com/videos/emotag-commits.mp4",
