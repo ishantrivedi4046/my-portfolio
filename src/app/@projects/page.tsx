@@ -11,7 +11,7 @@ const ProjectsPage = () => {
       <AnimatedText
         textNode={
           <div id="projects-text">
-            <div className="text-6xl font-medium text-center leading-tight">
+            <div className="xxxxs:text-3xl surface-duo:text-4xl ipad-mini:text-6xl font-medium text-center leading-tight">
               A small selection <br />
               of my work
             </div>
