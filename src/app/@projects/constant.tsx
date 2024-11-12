@@ -9,7 +9,7 @@ export const PROJECTS: CoverFlowSlideType[] = [
     summary: <Image src={portfolioWeb} alt="portfolio-web" />,
     details: {
       videoUrl:
-        "https://ishan-trivedi-portfolio.s3.amazonaws.com/videos/emotag-commits.mp4",
+        "https://ishan-trivedi-portfolio.s3.us-east-1.amazonaws.com/videos/portfolio.webm",
       title: "Portfolio Website",
       desc: "Loosely designed in Figma and coded in Visual Studio Code by yours truly. Built with Next.js and Tailwind CSS, deployed with Vercel.",
       features: [
