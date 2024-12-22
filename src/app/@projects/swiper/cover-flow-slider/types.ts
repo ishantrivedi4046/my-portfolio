@@ -16,3 +16,9 @@ export type CoverFlowSlideType = {
   summary: ReactNode;
   details: DetailsComponentConfig;
 };
+
+export type CardsSlideType = {
+  backgroundGradiant: string;
+  summary: ReactNode;
+  details: DetailsComponentConfig;
+};

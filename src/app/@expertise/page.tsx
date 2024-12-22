@@ -3,7 +3,7 @@ import ExpertiseScroller from "./ExpertiseScroller";
 
 const Expertise = () => {
   return (
-    <div id="expertise" className="flex flex-col items-center pt-[8.75rem]">
+    <div id="expertise" className="flex flex-col items-center sm:pt-[8.75rem]">
       <AnimatedText
         textNode={
           <div id="expertise-text">
