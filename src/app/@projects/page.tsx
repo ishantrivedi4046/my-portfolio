@@ -20,10 +20,10 @@ const ProjectsPage = () => {
         }
         observeElementId="projects-text"
       />
-      <div className="mt-10 py-8 surface-duo:block hidden coverflow-slides-container">
+      <div className="mt-10 py-8 ipad-mini:block hidden coverflow-slides-container">
         <ProjectSlider items={PROJECTS} />
       </div>
-      <div className="mt-10 py-8 surface-duo:hidden cards-container">
+      <div className="mt-10 py-8 ipad-mini:hidden cards-container">
         <ProjectsCardsSlider items={PROJECTS} />
       </div>
     </div>

@@ -75,7 +75,7 @@ const ProjectDetailsModal: React.FC<ProjectDetailsModalProps> = ({
             <div className="text-5xl font-medium mb-8 text-center ">
               Features
             </div>
-            <div className="px-24 text-base text-gray-500 marker:text-black">
+            <div className="lg2:px-24 px-12 text-base text-gray-500 marker:text-black">
               {features.map((f) => (
                 <li key={f} className="mb-1">
                   {f}
@@ -87,11 +87,11 @@ const ProjectDetailsModal: React.FC<ProjectDetailsModalProps> = ({
             <div className="text-5xl font-medium mb-8 text-center ">
               Tech Stack
             </div>
-            <div className="px-24 flex items-center gap-4">
+            <div className="lg2:px-24 px-12 flex items-center flex-wrap gap-4">
               {tech.map((f) => (
                 <div
                   key={f}
-                  className=" bg-blue-600 mt-6 font-medium text-white w-40 h-10 py-1 px-3 rounded-md flex justify-center items-center"
+                  className=" bg-blue-600 font-medium text-white w-fit h-10 py-1 px-4 rounded-md flex justify-center items-center"
                 >
                   {f}
                 </div>

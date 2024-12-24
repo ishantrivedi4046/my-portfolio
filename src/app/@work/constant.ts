@@ -3,6 +3,7 @@ export const DEVSLANE_SKILLS = [
   "React.js",
   "React Native",
   "Electron.js",
+  "GraphQL",
   "Typescript",
   "Adonis.js",
   "HTML & SCSS",

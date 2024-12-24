@@ -11,7 +11,7 @@ const WorkPage = () => {
       <AnimatedText
         textNode={
           <div id="work-text">
-            <div className="xxxxs:text-3xl surface-duo:text-4xl ipad-mini:text-6xl font-medium">
+            <div className="xxxxs:text-3xl surface-duo:text-4xl ipad-mini:text-5xl sm:6xl font-medium">
               My Work Experiance
             </div>
           </div>
