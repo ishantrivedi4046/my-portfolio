@@ -35,7 +35,7 @@ const ProjectDetailsModal: React.FC<ProjectDetailsModalProps> = ({
         },
       }}
     >
-      <div className="w-[50vw] h-[90vh] relative no-scrollbar">
+      <div className="md:w-[50vw] w-[80vw] h-[90vh] relative no-scrollbar">
         <Suspense fallback="Loading...">
           <video
             src={videoUrl}
