@@ -9,6 +9,8 @@ export interface DetailsComponentConfig {
   confidential: boolean;
   githubLink?: string;
   liveUrl?: string;
+  playStoreLink?: string;
+  appStoreLink?: string;
 }
 
 export type CoverFlowSlideType = {

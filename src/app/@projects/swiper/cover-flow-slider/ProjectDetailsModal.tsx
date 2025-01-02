@@ -3,6 +3,8 @@ import cx from "classnames";
 import Image from "next/image";
 import Link from "next/link";
 import { Suspense } from "react";
+import appStoreImage from "../../../../../public/appStore.svg";
+import googlePlayStoreImage from "../../../../../public/googlePlay.png";
 import info from "../../../../../public/info.svg";
 import { DetailsComponentConfig } from "./types";
 
@@ -22,6 +24,8 @@ const ProjectDetailsModal: React.FC<ProjectDetailsModalProps> = ({
   liveUrl,
   tech,
   confidential,
+  playStoreLink,
+  appStoreLink,
 }) => {
   return (
     <Modal
@@ -50,13 +54,13 @@ const ProjectDetailsModal: React.FC<ProjectDetailsModalProps> = ({
         </Suspense>
         <div className="flex flex-col justify-center items-center pt-16">
           <div className="text-5xl font-medium flex">{title}</div>
-          <div className="text-gray-500 mt-6 w-[60%] text-center">{desc}</div>
-          <div className="flex gap-2">
+          <div className="text-gray-500 mt-6 w-[80%] text-center">{desc}</div>
+          <div className="flex gap-4 mt-12">
             {!!githubLink && (
               <Link
                 href={githubLink}
                 target="_blank"
-                className="bg-black mt-6 text-white font-medium w-32 h-10 py-1 px-3 rounded-md flex justify-center items-center"
+                className="bg-black  text-white font-medium w-32 h-10 py-1 px-3 rounded-md flex justify-center items-center"
               >
                 Open Github
               </Link>
@@ -65,9 +69,27 @@ const ProjectDetailsModal: React.FC<ProjectDetailsModalProps> = ({
               <Link
                 href={liveUrl}
                 target="_blank"
-                className="bg-blue-600 mt-6 font-medium text-white w-40 h-10 py-1 px-3 rounded-md flex justify-center items-center"
+                className="bg-blue-600 font-medium text-white w-40 h-10 py-1 px-3 rounded-md flex justify-center items-center"
               >
                 Open Live Site
+              </Link>
+            )}
+            {!!playStoreLink && (
+              <Link href={playStoreLink} target="_blank">
+                <Image
+                  src={googlePlayStoreImage}
+                  alt="google-play-store"
+                  className="w-[11rem]"
+                />
+              </Link>
+            )}
+            {!!appStoreLink && (
+              <Link href={appStoreLink} target="_blank">
+                <Image
+                  src={appStoreImage}
+                  alt="app-store"
+                  className="w-[10rem]"
+                />
               </Link>
             )}
           </div>
@@ -99,7 +121,7 @@ const ProjectDetailsModal: React.FC<ProjectDetailsModalProps> = ({
             </div>
           </div>
           {confidential && (
-            <div className="my-6 flex w-full items-center justify-center">
+            <div className="my-6 flex w-[90%] items-center justify-center">
               <Image src={info} alt="info" />
               <span className="ml-2">
                 The live site for this project cannot be accessed due to

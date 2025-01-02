@@ -34,7 +34,9 @@ const CardsSlider: React.FC<CardsSliderProps> = ({ items }) => {
               {summary}
               <div className="flex flex-col px-6 py-4 text-white font-medium justify-center">
                 <div className="text-2xl mt-2">{details?.title}</div>
-                <div className="mt-4 text-sm">{details?.desc}</div>
+                <div className="mt-4 text-sm max-h-[11.5rem] overflow-auto">
+                  {details?.desc}
+                </div>
               </div>
             </div>
           </SwiperSlide>
