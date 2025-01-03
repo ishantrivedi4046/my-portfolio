@@ -14,6 +14,8 @@ const Slide = ({
   summary,
   activeSlide,
   details,
+  imageContainerClassNames,
+  zoomIconClassNames,
 }: SlideProps) => {
   const [allowZoom, setAllowZoom] = useState<boolean>(false);
   const [showDetailedProject, setShowDetailedProject] =
@@ -42,7 +44,8 @@ const Slide = ({
             {
               "hover:w-[100%] hover:h-[100%] hover:drop-shadow-xl hover:rounded-3xl":
                 !!activeSlide,
-            }
+            },
+            imageContainerClassNames
           )}
           onMouseEnter={() => setAllowZoom(true)}
           onMouseLeave={() => setAllowZoom(false)}
@@ -53,7 +56,8 @@ const Slide = ({
             alt={"zoom"}
             className={cx(
               "absolute right-10 top-10 z-20 opacity-0 transition-opacity duration-250 ease-in-out",
-              { "opacity-100": allowZoom && activeSlide }
+              { "opacity-100 text-white": allowZoom && activeSlide },
+              zoomIconClassNames
             )}
           />
           {summary}

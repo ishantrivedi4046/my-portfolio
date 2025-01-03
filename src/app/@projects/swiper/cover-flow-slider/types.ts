@@ -15,6 +15,8 @@ export interface DetailsComponentConfig {
 
 export type CoverFlowSlideType = {
   backgroundGradiant: string;
+  imageContainerClassNames?: string;
+  zoomIconClassNames?: string;
   summary: ReactNode;
   details: DetailsComponentConfig;
 };

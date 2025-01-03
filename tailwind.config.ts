@@ -33,6 +33,7 @@ const config: Config = {
         "gradient-radial":
           "radial-gradient(circle farthest-side at 50% 50%, rgba(91,136,204,.2), rgba(91,136,204,0))",
         "gradient-linear": "linear-gradient(180deg, hsla(0,0%,100%,0), #fff)",
+        "rove-gradient": "linear-gradient(180deg, #0F191F 16%, #237DA2 80%)",
         "gradient-conic":
           "conic-gradient( from 180deg at 50% 50%, #0aefff -69.37deg, #0f83ff 31.88deg, #b056e7 120deg, #ff9966 204.37deg, #0aefff 290.63deg, #0f83ff 391.87deg)",
       },
