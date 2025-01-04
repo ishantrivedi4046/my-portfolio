@@ -2,11 +2,12 @@ import Image from "next/image";
 import emotagCommit from "../../../public/emotagCommits.png";
 import portfolioWeb from "../../../public/portfolioWeb.png";
 import roveImage from "../../../public/rove.png";
+import rumeImage from "../../../public/rume.png";
 import { CoverFlowSlideType } from "./swiper/cover-flow-slider/types";
 
 export const PROJECTS: CoverFlowSlideType[] = [
   {
-    backgroundGradiant: "bg-gradient-project-one",
+    backgroundGradiant: "bg-gradient-project-portfolio",
     summary: <Image src={portfolioWeb} alt="portfolio-web" />,
     details: {
       videoUrl:
@@ -66,7 +67,31 @@ export const PROJECTS: CoverFlowSlideType[] = [
     },
   },
   {
-    backgroundGradiant: "bg-gradient-project-two",
+    backgroundGradiant: "bg-gradient-project-rume",
+    summary: <Image src={rumeImage} alt="rume-mvp" className="self-baseline" />,
+    details: {
+      videoUrl:
+        "https://ishan-trivedi-portfolio.s3.us-east-1.amazonaws.com/videos/rume.webm",
+      title: "Rume",
+      desc: "RUME is a tool that simplifies the networking process between Brands and Influencers by giving each group direct exposure to each other.",
+      features: [
+        "Responsive design optimized for seamless functionality and user experience across multiple devices and screen sizes.",
+        "Engaging animations that enhance and elevate the user experience.",
+        "Seamless Sign-Up and Sign-In flows designed for a quick and effortless start.",
+      ],
+      tech: [
+        "Typescript",
+        "React.js",
+        "Ant Design",
+        "SCSS",
+        "TailwindCSS",
+        "Redux",
+      ],
+      confidential: true,
+    },
+  },
+  {
+    backgroundGradiant: "bg-gradient-project-npm",
     summary: <Image src={emotagCommit} alt="emotag-commit" />,
     details: {
       videoUrl:

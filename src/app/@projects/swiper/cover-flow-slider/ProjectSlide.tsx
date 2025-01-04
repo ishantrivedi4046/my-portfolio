@@ -40,7 +40,7 @@ const Slide = ({
       >
         <div
           className={cx(
-            "bg-white w-[84%] relative h-[88%] rounded-t-3xl flex justify-center items-center transition-all duration-250 ease-in-out",
+            "bg-white w-[84%] overflow-clip relative h-[88%] rounded-t-3xl flex justify-center items-center transition-all duration-250 ease-in-out",
             {
               "hover:w-[100%] hover:h-[100%] hover:drop-shadow-xl hover:rounded-3xl":
                 !!activeSlide,
