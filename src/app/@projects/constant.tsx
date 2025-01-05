@@ -36,7 +36,7 @@ export const PROJECTS: CoverFlowSlideType[] = [
   {
     backgroundGradiant: "bg-gradient-project-rove",
     imageContainerClassNames: "!bg-rove-gradient",
-    zoomIconClassNames: "!text-white",
+    zoomIconTheme: "light",
     summary: <Image src={roveImage} alt="rove-background-image" />,
     details: {
       videoUrl:

@@ -1,7 +1,8 @@
 import cx from "classnames";
 import Image from "next/image";
 import { useState } from "react";
-import zoomIcon from "../../../../../public/zoom-out-map.svg";
+import zoomDarkIcon from "../../../../../public/zoom-out-map.svg";
+import zoomLightIcon from "../../../../../public/zoom-white.png";
 import ProjectDetailsModal from "./ProjectDetailsModal";
 import { CoverFlowSlideType } from "./types";
 
@@ -15,7 +16,7 @@ const Slide = ({
   activeSlide,
   details,
   imageContainerClassNames,
-  zoomIconClassNames,
+  zoomIconTheme = "dark",
 }: SlideProps) => {
   const [allowZoom, setAllowZoom] = useState<boolean>(false);
   const [showDetailedProject, setShowDetailedProject] =
@@ -52,12 +53,11 @@ const Slide = ({
         >
           <Image
             onClick={handleShowDetailedProject}
-            src={zoomIcon}
+            src={zoomIconTheme === "dark" ? zoomDarkIcon : zoomLightIcon}
             alt={"zoom"}
             className={cx(
               "absolute right-10 top-10 z-20 opacity-0 transition-opacity duration-250 ease-in-out",
-              { "opacity-100 text-white": allowZoom && activeSlide },
-              zoomIconClassNames
+              { "opacity-100 text-white": allowZoom && activeSlide }
             )}
           />
           {summary}
