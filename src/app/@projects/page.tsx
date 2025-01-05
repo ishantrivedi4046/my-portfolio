@@ -20,6 +20,16 @@ const ProjectsPage = () => {
         }
         observeElementId="projects-text"
       />
+      {PROJECTS.filter((p) => !!p.details?.videoUrl).map(({ details }) => (
+        <video
+          src={details?.videoUrl}
+          muted
+          preload={"auto"}
+          playsInline
+          controls={false}
+          width={"0%"}
+        />
+      ))}
       <div className="mt-10 py-8 ipad-mini:block hidden coverflow-slides-container">
         <ProjectSlider items={PROJECTS} />
       </div>
