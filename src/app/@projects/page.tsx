@@ -22,6 +22,7 @@ const ProjectsPage = () => {
       />
       {PROJECTS.filter((p) => !!p.details?.videoUrl).map(({ details }) => (
         <video
+          key={details?.videoUrl}
           src={details?.videoUrl}
           muted
           preload={"auto"}

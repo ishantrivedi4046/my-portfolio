@@ -1,7 +1,8 @@
 import { ReactNode } from "react";
 
 export interface DetailsComponentConfig {
-  videoUrl: string;
+  videoUrl?: string;
+  banner?: any;
   title: string;
   desc: string;
   features: Array<string>;

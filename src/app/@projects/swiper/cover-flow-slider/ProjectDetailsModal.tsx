@@ -2,7 +2,6 @@ import Modal from "@/shared-resources/components/common/Modal";
 import cx from "classnames";
 import Image from "next/image";
 import Link from "next/link";
-import { Suspense } from "react";
 import appStoreImage from "../../../../../public/appStore.svg";
 import googlePlayStoreImage from "../../../../../public/googlePlay.png";
 import info from "../../../../../public/info.svg";
@@ -26,6 +25,7 @@ const ProjectDetailsModal: React.FC<ProjectDetailsModalProps> = ({
   confidential,
   playStoreLink,
   appStoreLink,
+  banner,
 }) => {
   return (
     <Modal
@@ -40,7 +40,7 @@ const ProjectDetailsModal: React.FC<ProjectDetailsModalProps> = ({
       }}
     >
       <div className="md:w-[50vw] w-[80vw] h-[90vh] relative no-scrollbar">
-        <Suspense fallback="Loading...">
+        {!!videoUrl ? (
           <video
             src={videoUrl}
             autoPlay
@@ -51,7 +51,9 @@ const ProjectDetailsModal: React.FC<ProjectDetailsModalProps> = ({
             loop
             width={"100%"}
           />
-        </Suspense>
+        ) : (
+          <Image src={banner} alt="banner" />
+        )}
         <div className="flex flex-col justify-center items-center pt-16">
           <div className="text-5xl font-medium flex">{title}</div>
           <div className="text-gray-500 mt-6 w-[80%] text-center">{desc}</div>

@@ -2,6 +2,7 @@ import Image from "next/image";
 import emotagCommit from "../../../public/emotagCommits.png";
 import portfolioWeb from "../../../public/portfolioWeb.png";
 import roveImage from "../../../public/rove.png";
+import roveBanner from "../../../public/roveBanner.png";
 import rumeImage from "../../../public/rume.png";
 import { CoverFlowSlideType } from "./swiper/cover-flow-slider/types";
 
@@ -39,8 +40,7 @@ export const PROJECTS: CoverFlowSlideType[] = [
     zoomIconTheme: "light",
     summary: <Image src={roveImage} alt="rove-background-image" />,
     details: {
-      videoUrl:
-        "https://ishan-trivedi-portfolio.s3.us-east-1.amazonaws.com/videos/portfolio.webm",
+      banner: roveBanner,
       title: "Rove Charging",
       desc: "Rove Charging is a comprehensive EV charging solution featuring a React Native mobile app and an admin portal built with Next.js and GraphQL.The mobile app empowers users to initiate charging sessions, monitor real-time updates, and manage their EV charging experience seamlessly.The admin portal provides robust tools for administrators, including the ability to view and export detailed reports, as well as start and monitor ongoing charging sessions.This project showcases expertise in cross-platform app development, server-side rendering, and API integration to deliver a streamlined EV charging experience.",
       features: [
