@@ -23,14 +23,18 @@ const config: Config = {
         },
       },
       backgroundImage: {
-        "gradient-project-one":
+        "gradient-project-portfolio":
           "linear-gradient(45deg, #9862f0 0%, #3dc5be 100%)",
-        "gradient-project-two":
+        "gradient-project-npm":
           "linear-gradient(45deg, #f4ba24 0%, #ed5456 100%)",
+        "gradient-project-rume": "linear-gradient(to right, #ee0979, #ff6a00)",
+        "gradient-project-rove":
+          "linear-gradient(45deg, #13234b 0%, #13234b 100%)",
         "gradient-linear-text": "linear-gradient(58deg,#b94cdb,#fe815e)",
         "gradient-radial":
           "radial-gradient(circle farthest-side at 50% 50%, rgba(91,136,204,.2), rgba(91,136,204,0))",
         "gradient-linear": "linear-gradient(180deg, hsla(0,0%,100%,0), #fff)",
+        "rove-gradient": "linear-gradient(180deg, #0F191F 16%, #237DA2 80%)",
         "gradient-conic":
           "conic-gradient( from 180deg at 50% 50%, #0aefff -69.37deg, #0f83ff 31.88deg, #b056e7 120deg, #ff9966 204.37deg, #0aefff 290.63deg, #0f83ff 391.87deg)",
       },

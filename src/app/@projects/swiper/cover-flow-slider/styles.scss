@@ -1,14 +1,16 @@
-.swiper {
-  width: 100%;
-  padding: 3.125rem 0;
-}
+.coverflow-slides-container {
+  .swiper {
+    width: 100%;
+    padding: 3.125rem 0;
+  }
 
-.swiper-slide {
-  background-position: center;
-  background-size: cover;
-  width: 48rem;
-  .swiper-slide-shadow-left,
-  .swiper-slide-shadow-right {
-    background-image: none !important;
+  .swiper-slide {
+    background-position: center;
+    background-size: cover;
+    width: 48rem;
+    .swiper-slide-shadow-left,
+    .swiper-slide-shadow-right {
+      background-image: none !important;
+    }
   }
 }

@@ -1,0 +1,13 @@
+.cards-container {
+  .swiper {
+    width: 21rem;
+    height: 28rem;
+  }
+
+  .swiper-slide {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 2rem;
+  }
+}

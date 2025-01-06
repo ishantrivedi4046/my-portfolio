@@ -27,7 +27,7 @@ const page = () => {
             className="z-20 rounded-2xl sm:w-[31.25rem] w-[20rem]"
           />
         </div>
-        <div className="absolute bottom-0 z-20 h-[40%] bg-gradient-linear w-svw" />
+        <div className="absolute bottom-[-10px] z-20 h-[40%] bg-gradient-linear sm:w-[85vw] w-svw" />
       </div>
     </div>
   );

@@ -11,7 +11,7 @@ const WorkPage = () => {
       <AnimatedText
         textNode={
           <div id="work-text">
-            <div className="xxxxs:text-3xl surface-duo:text-4xl ipad-mini:text-6xl font-medium">
+            <div className="xxxxs:text-3xl surface-duo:text-4xl ipad-mini:text-5xl sm:6xl font-medium">
               My Work Experiance
             </div>
           </div>
@@ -29,7 +29,7 @@ const WorkPage = () => {
         <AnimatedCard
           observedElementId="devslane__element"
           containerId="devslane__container"
-          wrapClassnames="w-full md:w-[80%]"
+          wrapClassnames="w-full lg2:w-[80%] md:w-[90%]"
         >
           <div className="w-full h-[18rem] sm:h-[32rem] justify-between flex flex-row rounded-2xl bg-gradient-to-br from-red-100 to-orange-100 sm:px-8 px-6 sm:py-12 py-6  text-white pointer-events-none">
             <div className="h-full w-1/3 font-semibold text-lg text-right md:block hidden">
@@ -65,7 +65,7 @@ const WorkPage = () => {
         <AnimatedCard
           observedElementId="geeksforgeeks__element"
           containerId="geeksforgeeks__container"
-          wrapClassnames="w-full md:w-[80%]"
+          wrapClassnames="w-full lg2:w-[80%] md:w-[90%]"
         >
           <div className="w-full h-[18rem] sm:h-[32rem] flex justify-between text-white rounded-2xl bg-gradient-to-br from-green-100 sm:px-8 px-6 sm:py-12 py-6 to-green-900 p-4 pointer-events-none">
             <div className="h-full w-1/3 font-semibold text-lg text-right md:block hidden">
