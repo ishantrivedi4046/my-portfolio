@@ -20,7 +20,7 @@ const Benefits = () => {
         }
         observeElementId="benefits-text"
       />
-      <div className="w-full lg4:max-w-[60%] lg2:max-w-[70%] max-w-[82%] flex flex-wrap items-center justify-center gap-5 py-16 mt-10">
+      <div className="w-full lg5:max-w-[60%] lg4:max-w-[85%] flex flex-wrap items-center justify-center gap-5 py-16 mt-10">
         <div className="sm:w-[34rem] sm:h-[20rem] w-full h-[12rem] rounded-2xl flex  items-center justify-center gap-5">
           <div className="w-[48%] h-full rounded-2xl border border-white bg-black flex justify-center items-center">
             <div className="text-white text-center">
