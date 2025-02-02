@@ -15,7 +15,6 @@ const Expertise = () => {
         observeElementId="expertise-text"
       />
       <div className="w-full flex flex-col gap-12 justify-center items-center sm:pb-44 sm:pt-24 pb-32 pt-12 relative mt-10 clip-path">
-        <div className="bg-gradient-conic blur-[12rem] absolute left-0 right-0 top-[20%] h-full my-auto mx-auto" />
         <ExpertiseScroller />
       </div>
     </div>

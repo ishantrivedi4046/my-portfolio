@@ -25,6 +25,7 @@ const ExpertiseScroller = () => {
 
   return (
     <>
+      <div className="bg-gradient-conic blur-[12rem] absolute left-0 right-0 top-[20%] h-full my-auto mx-auto" />
       <div className="w-full inline-flex overflow-hidden scroller">
         <ul className="flex justify-center items-center gap-8 scroller__inner animate-infinite-scroll-left">
           {EXPERTISE_ROW_ONE.map(({ image, alt }) => (
