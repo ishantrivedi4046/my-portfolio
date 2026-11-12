@@ -5,10 +5,12 @@ name: Security
 on:
   pull_request:
     branches: [develop, master]
+    # Re-evaluate the policy when the PR target changes; develop → master must turn strict.
+    types: [opened, synchronize, reopened, edited, ready_for_review]
   push:
     branches: [develop, master]
   schedule:
-    # 03:00 UTC is 08:30 IST. GitHub schedules run the default branch (master).
+    # 03:00 UTC is 08:30 IST. GitHub schedules run the default branch (develop).
     - cron: '0 3 * * *'
   # Recovery path for missed schedules and on-demand full scans of either branch.
   workflow_dispatch:

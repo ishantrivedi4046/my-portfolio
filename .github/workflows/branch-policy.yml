@@ -5,6 +5,8 @@ on:
   pull_request:
     # Feature PRs into develop are allowed; only production-bound PRs need this guard.
     branches: [master]
+    # Retargeting an existing PR to master must run the promotion guard too.
+    types: [opened, synchronize, reopened, edited, ready_for_review]
 
 # The guard reads event metadata and needs no source checkout, secrets, or write token.
 permissions: {}

@@ -9,3 +9,6 @@
 # The field guide explains configuration; the debt inventory records review decisions.
 /docs/security-configuration-guide.md @ishantrivedi4046
 /docs/security-dependency-debt.md @ishantrivedi4046
+
+# Release requirements must stay aligned with the actual protected-branch setup.
+/RELEASE_PENDING.md @ishantrivedi4046

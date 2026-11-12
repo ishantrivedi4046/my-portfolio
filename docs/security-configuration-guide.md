@@ -3,7 +3,9 @@
 This explains why each part of the security setup exists. Workflow comments sit
 beside the settings; this guide covers the command flags and JSON fields that
 cannot carry inline comments. Current rollout: **report findings on develop,
-enforce severity on master**. No source/dependency baseline loader exists and nothing is automatically fixed.
+enforce severity on master**. GitHub defaults new PRs to develop; Vercel
+production remains explicitly tied to master. No source/dependency baseline loader
+exists and nothing is automatically fixed.
 
 ## Branch flow and rollout
 
@@ -21,19 +23,22 @@ feature or dependency branch → develop → master → Vercel production
   failures on both branches.
 - The master-only promotion guard requires the same repository's develop branch.
   It rejects feature branches and forks that happen to use the name develop.
+- Develop permits informational scan discussion threads to stay open for later
+  review; master requires resolved discussions. The owner explicitly approved this
+  develop-only setting; no scan or build check was removed.
 - The rulesets require PRs and block direct/force pushes and branch deletion.
   Rulesets are activated only after the checks are verified for this flow.
 
-GitHub schedules run only from the default branch, currently master. Until this
-infrastructure reaches master, use pushes or **Actions → Security → Run workflow →
-develop**. Native Dependabot monitoring is already active. No production promotion
-is performed merely to activate a schedule.
+GitHub schedules run from the default branch, now develop. Daily full scans and
+weekly Dependabot version updates are configured there without promoting the app
+to production. Use **Actions → Security → Run workflow → develop** for manual
+recovery. Native dependency monitoring also uses develop as its default branch.
 
 ## Where to review findings on GitHub
 
 | Location | What it shows |
 | --- | --- |
-| [Code scanning](https://github.com/ishantrivedi4046/my-portfolio/security/code-scanning) | Semgrep source/dependency findings and zizmor workflow findings; select develop, or the infrastructure PR before its merge |
+| [Code scanning](https://github.com/ishantrivedi4046/my-portfolio/security/code-scanning) | Semgrep source/dependency findings and zizmor workflow findings; default develop contains the installed reports |
 | [Dependabot alerts](https://github.com/ishantrivedi4046/my-portfolio/security/dependabot) | GitHub's dependency alerts for default-branch dependencies |
 | [Secret scanning](https://github.com/ishantrivedi4046/my-portfolio/security/secret-scanning) | Native GitHub secret alerts; Gitleaks failures also appear in its Actions job |
 | [Actions](https://github.com/ishantrivedi4046/my-portfolio/actions) | Scan health, source/dependency summary tables, logs, build checks and short-lived SARIF artifacts |
@@ -50,9 +55,10 @@ package/version/advisory identities rather than assuming counts must match.
 | Setting | Why it is needed |
 | --- | --- |
 | `pull_request.branches` | Covers the integration and production review paths |
+| `pull_request.types: edited` | Reruns policy when a PR target changes, so develop reporting cannot carry over into master enforcement |
 | `push.branches` | Scans the real branch state after a merge |
-| Daily `schedule` | Rechecks existing code/dependencies against newer rules/advisories once installed on master |
-| `workflow_dispatch` | Supports recovery and manual develop scans before promotion |
+| Daily `schedule` | Rechecks existing develop code/dependencies against newer rules/advisories |
+| `workflow_dispatch` | Supports recovery and manual full develop scans |
 | `contents: read` | Allows checkout without permitting repository changes |
 | `security-events: write` | Used only by the isolated reporting job to publish GitHub Security results |
 | `permissions: {}` | The promotion guard only needs event metadata, so receives no repository permissions |
@@ -137,15 +143,15 @@ Routine npm and Actions version-update PRs target develop. npm updates use the r
 manifest/lockfile; Actions updates inspect workflow references. Weekly Monday
 schedules, staggered by 30 minutes, avoid simultaneous update noise. Five open PRs
 per ecosystem bound the backlog. A seven-day cooldown applies to routine versions.
-This version-update automation starts only after the configuration reaches default
-master, even though its PRs target develop. Until then, use reviewed manual updates
-through develop; native vulnerability alerts/security-fix proposals remain active.
+The configuration is installed on default develop, so version-update automation
+is eligible there now; native alerts/security-fix proposals remain active too.
 Only compatible development-tool updates are grouped; major upgrades stay separate.
 
-GitHub security-fix PRs are different: GitHub creates them against the default
-branch even when version updates target develop. Keep their alerts and proposed
-patches, but transfer the reviewed change to a trusted branch targeting develop
-before merging. The master promotion guard blocks direct bot/feature promotion.
+GitHub security-fix PRs target the repository default branch, which is now
+develop. The seven existing master-bound security PRs were retargeted to develop.
+Bot PRs still need authenticated scan coverage through the documented trusted
+replacement process before merge. The master promotion guard blocks direct
+bot/feature promotion.
 See [GitHub's branch-targeting documentation](https://docs.github.com/en/code-security/tutorials/secure-your-dependencies/customizing-dependabot-prs).
 
 After reviewing GitHub findings, fix them through feature/dependency PRs into

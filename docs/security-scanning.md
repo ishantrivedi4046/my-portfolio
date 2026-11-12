@@ -1,7 +1,7 @@
 # Security scanning operations
 
-Owner: `ishantrivedi4046`. Production uses the existing Vercel Git integration
-from `master`. Changes flow through feature/dependency branch → `develop` → `master`.
+Owner: `ishantrivedi4046`. The GitHub default/PR integration branch is `develop`.
+Production uses the existing Vercel Git integration from `master`. Changes flow through feature/dependency branch → `develop` → `master`.
 Scanning does not independently delay Vercel after a protected master merge.
 
 Current rollout: source/dependency findings are informational on develop and strict
@@ -25,18 +25,12 @@ and manual dispatch. Required workflows have no path filters. Dependabot propose
 npm and Actions updates weekly on Monday, with a seven-day version-update cooldown;
 security alerts and security-fix updates remain continuous. Major upgrades stay
 separate. No automatic merging is configured. Version-update PRs target develop. Native
-security-fix PRs still target default master; transfer their reviewed patches to
-develop before merging.
-
-Dependabot version-update configuration is also loaded from default master.
-Until promotion installs it there, weekly version-update PRs are configured but
-not active; use reviewed manual updates through develop. Native Dependabot alerts
-and security-fix proposals remain active.
+security-fix PRs also target develop because it is now the default branch.
 
 GitHub-hosted schedules are best-effort and may be disabled after inactivity in a
-public repository. The schedule starts only after these workflows reach default
-master; until then use push/manual scans of develop. Review the latest scheduled
-run weekly. Recover with Actions →
+public repository. The schedule is eligible on default develop; the first timer
+run is not assumed to have happened merely because manual scans pass. Review the
+latest scheduled run weekly. Recover with Actions →
 Security → Run workflow; restore schedules and investigate quota/token failures.
 
 ## Account setup and rollout
@@ -57,19 +51,22 @@ Security → Run workflow; restore schedules and investigate quota/token failure
 5. Merge the infrastructure PR into develop after the reporting-mode checks pass.
    Source/dependency findings remain visible without blocking develop. Scan errors,
    missing authentication, secrets, workflow security, failed reporting and build
-   failures still block. Keep the workflow exception array empty; no initial baseline or
-   risk acceptance is required to install reporting on develop.
+   failures still block. Keep the workflow exception array empty; no initial baseline
+   or risk acceptance is required to install reporting on develop.
 6. Require the five scan/application checks and all three `security-reporting-*`
    checks on develop and master. Master additionally requires `promotion-policy`,
    which permits only a same-repository develop → master PR. Require up-to-date
    branches and PRs; apply rules to administrators, prohibit direct/force pushes
    and branch deletion, and leave routine bypass lists empty. Bind checks to
    GitHub Actions. Do not require an impossible self-approval for this solo owner.
+   Develop allows informational review threads to remain open, as explicitly
+   approved by the owner; master still requires review discussions to be resolved.
 7. Review findings in GitHub, remediate through develop, then promote develop to
    master only when strict checks pass. Verify Vercel deploys that master commit.
-   Do not merge to master merely to enable schedules while existing serious
-   findings remain. No Vercel token or replacement deployment workflow is needed;
-   project settings access verifies the production branch when promotion is ready.
+   Default-branch schedules run on develop, so no production promotion is needed
+   merely to activate monitoring while existing serious findings remain. No Vercel
+   token or replacement deployment workflow is needed; production branch master
+   was verified in the Vercel dashboard after the GitHub default-branch change.
 
 Native GitHub alerts cover dependency and secret monitoring. Semgrep findings are
 also available in its dashboard. Semgrep Code, Supply Chain and zizmor produce
@@ -90,7 +87,7 @@ The required Semgrep jobs **fail**, rather than reporting missing coverage as a
 successful or skipped check.
 
 The maintainer reviews the exact patch, especially workflows, scanner configs,
-baseline files and scripts; transfers it to a same-repository branch; and opens
+exception records and scripts; transfers it to a same-repository branch; and opens
 a replacement PR. Merge only the replacement after full checks pass. Any new
 commit needs review and another scan. Do not use `pull_request_target` to execute
 untrusted code, add deploy credentials, or bypass required checks.

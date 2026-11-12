@@ -1,17 +1,17 @@
 # Graph Report - my-portfolio  (2026-11-12)
 
 ## Corpus Check
-- 56 files · ~16,284 words
+- 57 files · ~16,717 words
 - Verdict: corpus is large enough that graph structure adds value.
 - Unclassified: 11 file(s) not represented in the graph (top: .scss 7, (none) 3, .toml 1)
 
 ## Summary
-- 414 nodes · 573 edges · 21 communities (14 shown, 7 thin omitted)
+- 420 nodes · 578 edges · 21 communities (13 shown, 8 thin omitted)
 - Extraction: 100% EXTRACTED · 0% INFERRED · 0% AMBIGUOUS
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `8f4fd946`
+- Built from commit: `17442481`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -24,7 +24,7 @@
 - compilerOptions
 - react
 - semgrep
-- True
+- Release Pending
 - .eslintrc.json
 - next.config.mjs
 - application.yml
@@ -63,23 +63,23 @@
 ## Import Cycles
 - None detected.
 
-## Communities (21 total, 7 thin omitted)
+## Communities (21 total, 8 thin omitted)
 
 ### Community 0 - "Contact.tsx"
 Cohesion: 0.09
-Nodes (18): classnames@^2.5.1, classnames, next, About(), Contact(), NAVIGATION_ITEMS, Header(), inter (+10 more)
+Nodes (18): lodash@^4.17.21, lodash, next, About(), Contact(), NAVIGATION_ITEMS, Header(), inter (+10 more)
 
 ### Community 1 - "package.json"
 Cohesion: 0.06
-Nodes (47): dependencies, lodash@^4.17.21, next@14.1.0, react@^18, react-dom@^18, react-modal@^3.16.1, sharp@^0.33.5, swiper@^11.1.0 (+39 more)
+Nodes (45): dependencies, next@14.1.0, react@^18, react-dom@^18, react-modal@^3.16.1, sharp@^0.33.5, swiper@^11.1.0, devDependencies (+37 more)
 
 ### Community 2 - "promotion"
-Cohesion: 0.12
-Nodes (16): HEAD_BRANCH, HEAD_REPOSITORY, jobs, promotion, name, permissions, name, runs-on (+8 more)
+Cohesion: 0.11
+Nodes (17): HEAD_BRANCH, HEAD_REPOSITORY, jobs, promotion, name, permissions, name, runs-on (+9 more)
 
 ### Community 3 - "react"
-Cohesion: 0.11
-Nodes (13): react, PROJECTS, CardsSlider(), CardsSliderProps, ProjectDetailsModal(), ProjectDetailsModalProps, Slide(), SlideProps (+5 more)
+Cohesion: 0.10
+Nodes (14): classnames@^2.5.1, classnames, PROJECTS, CardsSlider(), CardsSliderProps, ProjectDetailsModal(), ProjectDetailsModalProps, Slide() (+6 more)
 
 ### Community 4 - "policy.ts"
 Cohesion: 0.09
@@ -91,19 +91,15 @@ Nodes (17): compilerOptions, allowJs, esModuleInterop, incremental, isolatedModu
 
 ### Community 6 - "react"
 Cohesion: 0.07
-Nodes (14): Benefits(), EXPERTISE_ROW_ONE, EXPERTISE_ROW_TWO, ExpertiseScroller(), Expertise(), ProjectsPage(), DEVSLANE_SKILLS, GEEKS_FOR_GEEKS_SKILLS (+6 more)
+Nodes (15): react, Benefits(), EXPERTISE_ROW_ONE, EXPERTISE_ROW_TWO, ExpertiseScroller(), Expertise(), ProjectsPage(), DEVSLANE_SKILLS (+7 more)
 
 ### Community 7 - "semgrep"
-Cohesion: 0.06
-Nodes (37): concurrency, cancel-in-progress, group, env, FINDING_POLICY, argument, product, jobs (+29 more)
-
-### Community 8 - "True"
-Cohesion: 0.25
-Nodes (8): branches, branches, cron, True, pull_request, push, schedule, workflow_dispatch
+Cohesion: 0.05
+Nodes (46): concurrency, cancel-in-progress, group, env, FINDING_POLICY, argument, product, jobs (+38 more)
 
 ### Community 13 - "application.yml"
-Cohesion: 0.08
-Nodes (25): name, runs-on, steps, timeout-minutes, concurrency, cancel-in-progress, group, jobs (+17 more)
+Cohesion: 0.07
+Nodes (26): name, runs-on, steps, timeout-minutes, concurrency, cancel-in-progress, group, jobs (+18 more)
 
 ### Community 14 - "env"
 Cohesion: 0.09
@@ -123,23 +119,23 @@ Nodes (19): Branch flow and rollout, Dependabot and maintenance, Policy files an
 
 ## Knowledge Gaps
 - **1 isolated node(s):** `next/core-web-vitals`
-  These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 211 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
-- **7 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+  These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 216 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
+- **8 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
 - **Why does `react` connect `react` to `Contact.tsx`, `package.json`, `react`?**
-  _High betweenness centrality (0.049) - this node is a cross-community bridge._
+  _High betweenness centrality (0.048) - this node is a cross-community bridge._
 - **What connects `next/core-web-vitals` to the rest of the system?**
   _1 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `Contact.tsx` be split into smaller, more focused modules?**
   _Cohesion score 0.08902439024390243 - nodes in this community are weakly interconnected._
 - **Why does `next` connect `Contact.tsx` to `package.json`, `react`, `react`?**
-  _High betweenness centrality (0.044) - this node is a cross-community bridge._
+  _High betweenness centrality (0.042) - this node is a cross-community bridge._
 - **Should `package.json` be split into smaller, more focused modules?**
-  _Cohesion score 0.055272108843537414 - nodes in this community are weakly interconnected._
-- **Why does `classnames` connect `Contact.tsx` to `package.json`, `react`, `react`?**
+  _Cohesion score 0.05735430157261795 - nodes in this community are weakly interconnected._
+- **Why does `classnames` connect `react` to `Contact.tsx`, `package.json`, `react`?**
   _High betweenness centrality (0.015) - this node is a cross-community bridge._
 - **Should `promotion` be split into smaller, more focused modules?**
-  _Cohesion score 0.11764705882352941 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.1111111111111111 - nodes in this community are weakly interconnected._
