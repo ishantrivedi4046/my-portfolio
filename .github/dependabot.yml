@@ -1,0 +1,37 @@
+# Dependabot's supported configuration schema version, not a package version.
+version: 2
+updates:
+  # Propose application dependency updates against the integration branch.
+  - package-ecosystem: npm
+    # package.json and package-lock.json live at the repository root.
+    directory: /
+    target-branch: develop
+    schedule:
+      # Weekly proposals limit maintenance noise; vulnerability alerts remain continuous.
+      interval: weekly
+      day: monday
+      time: '04:00'
+      timezone: Asia/Kolkata
+    open-pull-requests-limit: 5
+    # Wait for newly published versions to mature before routine version updates.
+    cooldown:
+      default-days: 7
+    groups:
+      # Group compatible development-tool updates; keep major upgrades separate.
+      development-minor-patch:
+        dependency-type: development
+        update-types: [minor, patch]
+    labels: [dependencies]
+  # Keep pinned Actions up to date through reviewed PRs, not mutable release tags.
+  - package-ecosystem: github-actions
+    directory: /
+    target-branch: develop
+    schedule:
+      interval: weekly
+      day: monday
+      time: '04:30'
+      timezone: Asia/Kolkata
+    open-pull-requests-limit: 5
+    cooldown:
+      default-days: 7
+    labels: [dependencies]

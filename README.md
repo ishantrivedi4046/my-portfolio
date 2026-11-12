@@ -34,3 +34,19 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+
+## Security reports and branch flow
+
+Changes enter `develop` first, then promote to `master` for Vercel production.
+During setup, source/dependency findings are reported on develop and enforced on
+master. Secrets, broken scanners, unsafe workflows and build failures still block
+both branches. No findings have been baselined.
+
+- [Code and workflow findings](https://github.com/ishantrivedi4046/my-portfolio/security/code-scanning)
+- [Dependabot alerts](https://github.com/ishantrivedi4046/my-portfolio/security/dependabot)
+- [Scan runs and summaries](https://github.com/ishantrivedi4046/my-portfolio/actions)
+- [Configuration explained](docs/security-configuration-guide.md)
+- [Operations and recovery](docs/security-scanning.md)
+
+Select the develop branch (or the infrastructure PR before merge) when reviewing
+code-scanning results. Dependency fixes follow the same develop → master flow.

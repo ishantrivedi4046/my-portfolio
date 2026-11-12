@@ -1,0 +1,6 @@
+# Generated assets are not application source. Gitleaks still scans tracked files.
+graphify-out/
+node_modules/
+.next/
+out/
+coverage/

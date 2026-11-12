@@ -1,0 +1,6 @@
+title = "Portfolio secret detection"
+
+[extend]
+useDefault = true
+
+# No global allowlists: generated graphs and historical commits remain in scope.
