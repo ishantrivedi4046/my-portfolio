@@ -91,6 +91,7 @@ package/version/advisory identities rather than assuming counts must match.
 | Process event `GITHUB_EVENT_NAME=push` | The pinned scanner uses it to request full coverage instead of automatic PR differential scanning |
 | `SEMGREP_BRANCH` | Associates results with the actual feature/develop/master branch |
 | `--code` / `--supply-chain` | Selects the intended Semgrep product for each matrix job |
+| `--pro` for Code | Explicitly requests the enabled static cross-file engine; does not enable AI features |
 | `--audit-on push` on develop | Makes platform finding severity informational without downgrading scanner failures |
 | `--no-suppress-errors` | Prevents scanner errors from being treated as clean results |
 | `--disable-nosem` | Prevents source comments from silently bypassing reviewed policy |

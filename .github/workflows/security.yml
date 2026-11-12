@@ -86,6 +86,11 @@ jobs:
           else
             set --
           fi
+          # Explicitly request the account-enabled static cross-file engine for Code.
+          # This is Pro static analysis, not the separate AI/Multimodal features.
+          if [ "$SCAN_ARGUMENT" = --code ]; then
+            set -- "$@" --pro
+          fi
           docker run --rm --user "$(id -u):$(id -g)" \
             --cap-drop=ALL --security-opt=no-new-privileges \
             --volume "$GITHUB_WORKSPACE:/src:ro" \

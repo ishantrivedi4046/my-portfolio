@@ -12,7 +12,13 @@ try {
   if (!['report', 'enforce'].includes(FINDING_POLICY)) throw new Error('Expected report or enforce finding policy');
   // A rollout mode never skips report validation or lockfile coverage.
   // No baseline loader: every serious source/dependency finding blocks master.
-  const findings = parseSemgrep(JSON.parse(readFileSync(REPORT, 'utf8')), PRODUCT as 'code' | 'dependencies');
+  const rawReport: unknown = JSON.parse(readFileSync(REPORT, 'utf8'));
+  const findings = parseSemgrep(rawReport, PRODUCT as 'code' | 'dependencies');
+  // Log only engine metadata so the owner can verify cross-file usage without raw source output.
+  if (PRODUCT === 'code' && typeof rawReport === 'object' && rawReport !== null
+      && 'interfile_languages_used' in rawReport) {
+    console.log(`Cross-file languages used: ${JSON.stringify(rawReport.interfile_languages_used)}`);
+  }
   const blocking = findings;
   // Findings remain in logs and SARIF even when develop is in report-only mode.
   for (const finding of blocking) console.error(`SECURITY_FINDING ${JSON.stringify(finding)}`);
