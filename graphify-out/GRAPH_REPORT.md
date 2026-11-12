@@ -1,7 +1,7 @@
 # Graph Report - my-portfolio  (2026-11-12)
 
 ## Corpus Check
-- 56 files · ~16,189 words
+- 56 files · ~16,284 words
 - Verdict: corpus is large enough that graph structure adds value.
 - Unclassified: 11 file(s) not represented in the graph (top: .scss 7, (none) 3, .toml 1)
 
