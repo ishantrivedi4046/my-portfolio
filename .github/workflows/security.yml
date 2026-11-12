@@ -1,0 +1,128 @@
+name: Security
+
+on:
+  pull_request:
+  push:
+    branches: [master]
+  schedule:
+    - cron: '0 3 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: security-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  semgrep:
+    name: security-${{ matrix.product }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - product: code
+            argument: --code
+          - product: dependencies
+            argument: --supply-chain
+    container:
+      image: semgrep/semgrep:1.185.0@sha256:67518c174185a2043fdbed16c70631b79209499b3671178e7194379b48295a0d
+      options: --cap-drop=ALL --security-opt=no-new-privileges
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Require authenticated coverage
+        env:
+          SEMGREP_APP_TOKEN: ${{ secrets.SEMGREP_APP_TOKEN }}
+        run: |
+          if [ -z "$SEMGREP_APP_TOKEN" ]; then
+            echo '::error::Semgrep token unavailable. Fork/bot PRs require a maintainer-reviewed same-repository replacement PR; see docs/security-scanning.md.'
+            exit 1
+          fi
+      # Only the vendor scanner executes while the token is present.
+      # No npm install, repository scripts, local builds, or PR-supplied commands.
+      - name: Scan with configured blocking policies
+        env:
+          SEMGREP_APP_TOKEN: ${{ secrets.SEMGREP_APP_TOKEN }}
+          SCAN_ARGUMENT: ${{ matrix.argument }}
+          SEMGREP_BRANCH: ${{ github.head_ref || github.ref_name }}
+        # The pinned GithubMeta reads GITHUB_EVENT_NAME, not SEMGREP_EVENT_NAME.
+        # Override it for this process only to disable automatic PR baselining.
+        # Full scans also avoid zero-target failures on docs-only PRs.
+        run: env GITHUB_EVENT_NAME=push semgrep ci "$SCAN_ARGUMENT" --no-suppress-errors --disable-nosem --json-output /tmp/semgrep-results.json
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: '24'
+          package-manager-cache: false
+      - name: Independently enforce severity and expiring baseline
+        env:
+          PRODUCT: ${{ matrix.product }}
+        run: node scripts/security/check-semgrep.ts /tmp/semgrep-results.json "$PRODUCT"
+
+  secrets:
+    name: security-secrets
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Install verified Gitleaks CLI
+        env:
+          TOOL_URL: https://github.com/gitleaks/gitleaks/releases/download/v8.30.1/gitleaks_8.30.1_linux_x64.tar.gz
+          TOOL_SHA256: 551f6fc83ea457d62a0d98237cbad105af8d557003051f41f3e7ca7b3f2470eb
+        run: |
+          curl --fail --silent --show-error --location "$TOOL_URL" -o "$RUNNER_TEMP/gitleaks.tar.gz"
+          echo "$TOOL_SHA256  $RUNNER_TEMP/gitleaks.tar.gz" | sha256sum --check --strict
+          tar -xzf "$RUNNER_TEMP/gitleaks.tar.gz" -C "$RUNNER_TEMP" gitleaks
+      - name: Scan every PR commit
+        if: github.event_name == 'pull_request'
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          MERGE_BASE=$(git merge-base "$BASE_SHA" "$HEAD_SHA")
+          "$RUNNER_TEMP/gitleaks" git --redact --exit-code 1 --log-opts="$MERGE_BASE..$HEAD_SHA" --config .gitleaks.toml --ignore-gitleaks-allow --gitleaks-ignore-path /dev/null
+      - name: Scan complete available history
+        if: github.event_name != 'pull_request'
+        run: |
+          "$RUNNER_TEMP/gitleaks" git --redact --exit-code 1 --log-opts='--all' --config .gitleaks.toml --ignore-gitleaks-allow --gitleaks-ignore-path /dev/null
+      - name: Scan tracked working-tree files, including generated files
+        run: |
+          mkdir "$RUNNER_TEMP/tracked-source"
+          git archive HEAD | tar -x -C "$RUNNER_TEMP/tracked-source"
+          "$RUNNER_TEMP/gitleaks" dir "$RUNNER_TEMP/tracked-source" --redact --exit-code 1 --config .gitleaks.toml --ignore-gitleaks-allow --gitleaks-ignore-path /dev/null
+
+  workflows:
+    name: security-workflows
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Install verified zizmor CLI
+        env:
+          TOOL_URL: https://github.com/zizmorcore/zizmor/releases/download/v1.32.0/zizmor-x86_64-unknown-linux-gnu.tar.gz
+          TOOL_SHA256: bb110cc765eca9cd7efb2e284a956be5974c60027b0970f16397d86208a9957b
+        run: |
+          curl --fail --silent --show-error --location "$TOOL_URL" -o "$RUNNER_TEMP/zizmor.tar.gz"
+          echo "$TOOL_SHA256  $RUNNER_TEMP/zizmor.tar.gz" | sha256sum --check --strict
+          tar -xzf "$RUNNER_TEMP/zizmor.tar.gz" -C "$RUNNER_TEMP" zizmor
+      - name: Audit workflow security
+        # JSON supplies exact fingerprints. Tool/collection failures still fail this step.
+        run: '"$RUNNER_TEMP/zizmor" --offline --no-config --no-ignores --strict-collection --persona auditor --no-exit-codes --format json-v1 --collect=all -- . > "$RUNNER_TEMP/zizmor.json"'
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: '24'
+          package-manager-cache: false
+      - name: Validate immutable references and exception policy
+        run: node scripts/security/check-policy.ts "$RUNNER_TEMP/zizmor.json"
+      - name: Test security policy enforcement
+        run: node --test scripts/security/*.test.ts

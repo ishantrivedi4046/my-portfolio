@@ -1,0 +1,8 @@
+# Ownership requests review; it does not enforce independent approval for a solo owner.
+/.github/ @ishantrivedi4046
+/.gitleaks.toml @ishantrivedi4046
+/.semgrepignore @ishantrivedi4046
+/security/ @ishantrivedi4046
+/scripts/security/ @ishantrivedi4046
+/SECURITY.md @ishantrivedi4046
+/docs/security-scanning.md @ishantrivedi4046
