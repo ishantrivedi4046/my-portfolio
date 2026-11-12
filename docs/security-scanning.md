@@ -54,10 +54,15 @@ Security → Run workflow; restore schedules and investigate quota/token failure
    production branch. Do not enable production deploys on other branches.
 
 Native GitHub alerts cover dependency and secret monitoring. Semgrep findings are
-available in its dashboard; Actions logs contain check conclusions. Workflow
-findings appear in Actions logs. No raw secret reports are published as artifacts.
-Do not claim Semgrep/zizmor SARIF is uploaded to GitHub unless a verified reporting
-integration is enabled separately.
+also available in its dashboard. Semgrep Code, Supply Chain and zizmor produce
+SARIF reports, retained as GitHub artifacts for three days and uploaded to GitHub
+Security by separate publishing jobs. The publishing jobs never check out or
+execute repository/artifact code, verify the scanned commit/ref matches the run,
+and alone receive security-event write permission. They run even when a severity
+gate fails, so blocked findings remain visible. Fork/bot publishing is skipped;
+the trusted replacement PR supplies authenticated scanning and reporting. SARIF
+may include source context from this public repository. No Gitleaks/raw secret
+reports or Semgrep raw JSON reports are published as artifacts.
 
 ## Fork and Dependabot pull requests
 

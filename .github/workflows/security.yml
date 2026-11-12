@@ -41,6 +41,15 @@ jobs:
             echo '::error::Semgrep token unavailable. Fork/bot PRs require a maintainer-reviewed same-repository replacement PR; see docs/security-scanning.md.'
             exit 1
           fi
+      - name: Prepare scan metadata
+        run: |
+          install -d -m 700 "$RUNNER_TEMP/semgrep-report"
+          python3 - <<'PY'
+          import json, os, subprocess
+          from pathlib import Path
+          metadata = {'sha': subprocess.check_output(['git', 'rev-parse', 'HEAD'], text=True).strip(), 'ref': os.environ['GITHUB_REF']}
+          Path(os.environ['RUNNER_TEMP'], 'semgrep-report', 'scan.json').write_text(json.dumps(metadata))
+          PY
       # Only the vendor scanner executes while the token is present.
       # No npm install, repository scripts, local builds, or PR-supplied commands.
       - name: Scan with configured blocking policies
@@ -52,7 +61,6 @@ jobs:
         # Run only the vendor scanner in the Alpine image. Node policy checks stay
         # on the host. No Docker socket or repository write access in the scanner.
         run: |
-          install -d -m 700 "$RUNNER_TEMP/semgrep-report"
           docker run --rm --user "$(id -u):$(id -g)" \
             --cap-drop=ALL --security-opt=no-new-privileges \
             --volume "$GITHUB_WORKSPACE:/src:ro" \
@@ -62,7 +70,7 @@ jobs:
             --env GITHUB_REPOSITORY --env GITHUB_SHA --env GITHUB_REF \
             --env GITHUB_SERVER_URL --env GITHUB_RUN_ID \
             "$SEMGREP_IMAGE" semgrep ci "$SCAN_ARGUMENT" \
-            --no-suppress-errors --disable-nosem --json-output /reports/semgrep-results.json
+            --no-suppress-errors --disable-nosem --json-output /reports/semgrep-results.json --sarif-output /reports/results.sarif
       - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version: '24'
@@ -71,6 +79,66 @@ jobs:
         env:
           PRODUCT: ${{ matrix.product }}
         run: node scripts/security/check-semgrep.ts "$RUNNER_TEMP/semgrep-report/semgrep-results.json" "$PRODUCT"
+      - name: Preserve SARIF reporting inputs
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: security-sarif-${{ matrix.product }}-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            ${{ runner.temp }}/semgrep-report/results.sarif
+            ${{ runner.temp }}/semgrep-report/scan.json
+          if-no-files-found: ignore
+          retention-days: 3
+
+  publish:
+    name: security-reporting-${{ matrix.product }}
+    needs: [semgrep, workflows]
+    if: >-
+      always() && github.actor != 'dependabot[bot]' &&
+      (github.event_name != 'pull_request' ||
+       github.event.pull_request.head.repo.full_name == github.repository)
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      security-events: write
+    strategy:
+      fail-fast: false
+      matrix:
+        product: [code, dependencies, workflows]
+    steps:
+      # No checkout and no execution of repository or artifact code with write access.
+      - name: Download scanner data from this run
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: security-sarif-${{ matrix.product }}-${{ github.run_id }}-${{ github.run_attempt }}
+          path: reports
+      - name: Validate report and scanned commit
+        id: scan
+        run: |
+          python3 - <<'PY'
+          import json, os, re
+          from pathlib import Path
+          metadata = json.loads(Path('reports/scan.json').read_text())
+          report = json.loads(Path('reports/results.sarif').read_text())
+          if not re.fullmatch(r'[a-f0-9]{40}', metadata.get('sha', '')):
+              raise SystemExit('Invalid scanned SHA')
+          ref = metadata.get('ref', '')
+          if ref != os.environ['GITHUB_REF'] or metadata['sha'] != os.environ['GITHUB_SHA']:
+              raise SystemExit('Report does not match this workflow commit/ref')
+          if report.get('version') != '2.1.0' or not isinstance(report.get('runs'), list) or not report['runs']:
+              raise SystemExit('Invalid SARIF report')
+          with open(os.environ['GITHUB_OUTPUT'], 'a') as output:
+              output.write(f"sha={metadata['sha']}\nref={ref}\n")
+          PY
+      - name: Publish findings to GitHub Security
+        uses: github/codeql-action/upload-sarif@33d7b85da1a04171e211befe2c739303b9a4c066 # v4
+        with:
+          sarif_file: reports/results.sarif
+          category: ${{ matrix.product }}
+          ref: ${{ steps.scan.outputs.ref }}
+          sha: ${{ steps.scan.outputs.sha }}
+          wait-for-processing: true
 
   secrets:
     name: security-secrets
@@ -134,3 +202,22 @@ jobs:
         run: node scripts/security/check-policy.ts "$RUNNER_TEMP/zizmor.json"
       - name: Test security policy enforcement
         run: node --test scripts/security/*.test.ts
+      - name: Prepare workflow security report
+        if: always()
+        run: |
+          install -d -m 700 "$RUNNER_TEMP/workflow-report"
+          "$RUNNER_TEMP/zizmor" --offline --no-config --no-ignores --strict-collection --persona auditor --no-exit-codes --format sarif --collect=all -- . > "$RUNNER_TEMP/workflow-report/results.sarif"
+          python3 - <<'PY'
+          import json, os, subprocess
+          from pathlib import Path
+          metadata = {'sha': subprocess.check_output(['git', 'rev-parse', 'HEAD'], text=True).strip(), 'ref': os.environ['GITHUB_REF']}
+          Path(os.environ['RUNNER_TEMP'], 'workflow-report', 'scan.json').write_text(json.dumps(metadata))
+          PY
+      - name: Preserve workflow reporting inputs
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: security-sarif-workflows-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/workflow-report/
+          if-no-files-found: ignore
+          retention-days: 3
