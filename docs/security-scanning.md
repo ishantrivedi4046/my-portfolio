@@ -44,7 +44,8 @@ Security → Run workflow; restore schedules and investigate quota/token failure
    blocking policies; local output checks provide additional enforcement when
    platform policies are in monitoring mode. Platform blocking policies may be
    stricter than local exceptions and fail before the local evaluator runs.
-6. Require all five named checks, an up-to-date branch and a PR on `master`.
+6. Require the five scan/application checks and all three `security-reporting-*`
+   checks, an up-to-date branch and a PR on `master`.
    Apply rules to administrators, prohibit direct/force pushes and branch deletion,
    and leave routine bypass lists empty. Bind checks to GitHub Actions where
    supported. A solo maintainer cannot approve their own PR: do not configure an
