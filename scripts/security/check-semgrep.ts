@@ -1,24 +1,33 @@
 import { appendFileSync, readFileSync } from 'node:fs';
-import { parseSemgrep, semgrepExceptions } from './semgrep-policy.ts';
+import { parseSemgrep } from './semgrep-policy.ts';
 
+// These positional arguments are supplied by the reviewed workflow, never PR text.
 const REPORT = process.argv[2];
 const PRODUCT = process.argv[3];
+// Default to strict behavior for local/manual callers that omit a rollout mode.
+const FINDING_POLICY = process.argv[4] ?? 'enforce';
 
 try {
   if (!REPORT || !['code', 'dependencies'].includes(PRODUCT)) throw new Error('Expected a report path and code/dependencies product');
-  const allowed = semgrepExceptions(JSON.parse(readFileSync('security/semgrep-baseline.json', 'utf8')));
+  if (!['report', 'enforce'].includes(FINDING_POLICY)) throw new Error('Expected report or enforce finding policy');
+  // A rollout mode never skips report validation or lockfile coverage.
+  // No baseline loader: every serious source/dependency finding blocks master.
   const findings = parseSemgrep(JSON.parse(readFileSync(REPORT, 'utf8')), PRODUCT as 'code' | 'dependencies');
-  const blocking = findings.filter((finding) => !allowed.has(finding.fingerprint));
+  const blocking = findings;
+  // Findings remain in logs and SARIF even when develop is in report-only mode.
   for (const finding of blocking) console.error(`SECURITY_FINDING ${JSON.stringify(finding)}`);
   if (process.env.GITHUB_STEP_SUMMARY) {
     appendFileSync(process.env.GITHUB_STEP_SUMMARY,
-      `## Semgrep ${PRODUCT}\n\nSerious findings: ${findings.length}; blocking: ${blocking.length}.\n\n`
+      `## Semgrep ${PRODUCT}\n\nPolicy: ${FINDING_POLICY}. Serious findings: ${findings.length}; would block in strict mode: ${blocking.length}.\n\n`
       + '| Severity | Dependency | Advisory | Reachable |\n| --- | --- | --- | --- |\n'
       + findings.map((finding) => `| ${finding.severity} | ${finding.dependency.replaceAll('|', '/')} | ${finding.advisory.replaceAll('|', '/')} | ${finding.reachable} |`).join('\n') + '\n');
   }
-  if (blocking.length > 0) process.exitCode = 1;
-  else console.log(`Semgrep ${PRODUCT} policy passed; ${findings.length} accepted serious findings`);
+  // Only finding severity is informational on develop; master stays strict.
+  if (blocking.length > 0 && FINDING_POLICY === 'enforce') process.exitCode = 1;
+  else if (FINDING_POLICY === 'report') console.log(`Semgrep ${PRODUCT}: report-only; ${blocking.length} serious findings need review`);
+  else console.log(`Semgrep ${PRODUCT} policy passed; no serious findings`);
 } catch (error: unknown) {
+  // Missing/authentication/error/incomplete coverage failures are never downgraded.
   console.error(error instanceof Error ? error.message : 'Semgrep policy failed');
   process.exitCode = 1;
 }

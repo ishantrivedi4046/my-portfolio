@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
-import { parseSemgrep, semgrepExceptions } from './semgrep-policy.ts';
+import { parseSemgrep } from './semgrep-policy.ts';
 
 const REPORT = {
   errors: [], paths: { scanned: ['src/example.ts', 'package-lock.json'] },
@@ -40,12 +40,9 @@ test('legacy ERROR uses security metadata; missing metadata requires review', ()
   assert.equal(parseSemgrep({ ...REPORT, results: [{ ...result, extra: { severity: 'ERROR' } }] }, 'code')[0].severity, 'UNKNOWN');
 });
 
-test('baseline exceptions are narrow, expiring, and owner-approved', () => {
-  const now = Date.parse('2026-11-12T12:00:00Z');
-  const fingerprint = parseSemgrep(REPORT, 'code')[0].fingerprint;
-  const entry = { fingerprint, owner: 'ishantrivedi4046', reason: 'Reviewed debt', created: '2026-11-11', expires: '2026-11-20' };
-  assert.equal(semgrepExceptions({ exceptions: [entry] }, now).has(fingerprint), true);
-  for (const patch of [{ expires: '2026-11-12' }, { expires: '2027-01-01' }, { fingerprint: '*' }, { reason: '' }]) {
-    assert.throws(() => semgrepExceptions({ exceptions: [{ ...entry, ...patch }] }, now));
-  }
+test('unknown dependency reachability or advisory severity never exempts serious risk', () => {
+  const extra = { severity: 'WARNING', metadata: { 'sca-severity': 'HIGH' }, sca_info: { dependency_match: {} } };
+  const report = { ...REPORT, results: [{ check_id: 'synthetic', path: 'package-lock.json', extra }] };
+  assert.equal(parseSemgrep(report, 'dependencies')[0].severity, 'HIGH');
+  assert.equal(parseSemgrep({ ...report, results: [{ ...report.results[0], extra: { ...extra, metadata: {} } }] }, 'dependencies')[0].severity, 'UNKNOWN');
 });

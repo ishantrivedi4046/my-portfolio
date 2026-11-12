@@ -6,3 +6,6 @@
 /scripts/security/ @ishantrivedi4046
 /SECURITY.md @ishantrivedi4046
 /docs/security-scanning.md @ishantrivedi4046
+# The field guide explains configuration; the debt inventory records review decisions.
+/docs/security-configuration-guide.md @ishantrivedi4046
+/docs/security-dependency-debt.md @ishantrivedi4046

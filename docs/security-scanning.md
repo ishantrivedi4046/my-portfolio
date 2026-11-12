@@ -1,26 +1,42 @@
 # Security scanning operations
 
 Owner: `ishantrivedi4046`. Production uses the existing Vercel Git integration
-from `master`. Scanning does not independently delay Vercel after a protected merge.
+from `master`. Changes flow through feature/dependency branch → `develop` → `master`.
+Scanning does not independently delay Vercel after a protected master merge.
+
+Current rollout: source/dependency findings are informational on develop and strict
+on master. No source/dependency baseline or bypass is supported. See the
+[configuration field guide](security-configuration-guide.md) for the purpose of
+each setting/flag and direct GitHub report links.
 
 ## Checks and schedules
 
 | Check | Coverage | Failure policy |
 | --- | --- | --- |
-| `security-code` | Full Semgrep Code scans on every event, including docs-only PRs | High/critical and unclassified serious findings except reviewed unexpired baseline identities; scanner errors |
-| `security-dependencies` | Full Semgrep Supply Chain scan, including unchanged npm lockfiles | High/critical advisories except explicitly reviewed, unexpired baseline identities; unknown reachability does not exempt |
+| `security-code` | Full Semgrep Code scans on every event, including docs-only PRs | Findings report on develop; high/critical/unknown findings block master. Scanner errors block both |
+| `security-dependencies` | Full Semgrep Supply Chain scan, including unchanged npm lockfiles | Findings report on develop; high/critical advisories block master. Coverage errors block both; unknown reachability does not exempt |
 | `security-secrets` | Gitleaks CLI; every PR commit plus current tracked files, full available Git history otherwise | Every detected secret; no inline ignore comments or global exclusions |
 | `security-workflows` | zizmor across workflow/Action definitions and dependency-free policy checks | High/unknown findings; mandatory immutable references, minimal permissions, no persistent checkout credentials |
 | `application-validation` | Locked npm install, lint, Next.js production build | Any command fails |
 
-Security runs on all PRs, pushes to `master`, daily at **03:00 UTC / 08:30 IST**,
+Security runs on PRs into develop/master, pushes to both branches, daily on the
+default branch at **03:00 UTC / 08:30 IST**,
 and manual dispatch. Required workflows have no path filters. Dependabot proposes
 npm and Actions updates weekly on Monday, with a seven-day version-update cooldown;
 security alerts and security-fix updates remain continuous. Major upgrades stay
-separate. No automatic merging is configured.
+separate. No automatic merging is configured. Version-update PRs target develop. Native
+security-fix PRs still target default master; transfer their reviewed patches to
+develop before merging.
+
+Dependabot version-update configuration is also loaded from default master.
+Until promotion installs it there, weekly version-update PRs are configured but
+not active; use reviewed manual updates through develop. Native Dependabot alerts
+and security-fix proposals remain active.
 
 GitHub-hosted schedules are best-effort and may be disabled after inactivity in a
-public repository. Review the latest scheduled run weekly. Recover with Actions →
+public repository. The schedule starts only after these workflows reach default
+master; until then use push/manual scans of develop. Review the latest scheduled
+run weekly. Recover with Actions →
 Security → Run workflow; restore schedules and investigate quota/token failures.
 
 ## Account setup and rollout
@@ -38,21 +54,22 @@ Security → Run workflow; restore schedules and investigate quota/token failure
 4. Generate an **Agent (CI)** token and save it only as the repository Actions
    secret `SEMGREP_APP_TOKEN`. The token is never available to the install/build
    job or policy-script steps. No repository scripts execute in the scanner step.
-5. Start with a PR and review results before enabling required checks. Establish
-   the initial baseline by reviewing each actual finding; the shipped baseline
-   is empty and never auto-accepts current findings. Configure matching Semgrep
-   blocking policies; local output checks provide additional enforcement when
-   platform policies are in monitoring mode. Platform blocking policies may be
-   stricter than local exceptions and fail before the local evaluator runs.
+5. Merge the infrastructure PR into develop after the reporting-mode checks pass.
+   Source/dependency findings remain visible without blocking develop. Scan errors,
+   missing authentication, secrets, workflow security, failed reporting and build
+   failures still block. Keep the workflow exception array empty; no initial baseline or
+   risk acceptance is required to install reporting on develop.
 6. Require the five scan/application checks and all three `security-reporting-*`
-   checks, an up-to-date branch and a PR on `master`.
-   Apply rules to administrators, prohibit direct/force pushes and branch deletion,
-   and leave routine bypass lists empty. Bind checks to GitHub Actions where
-   supported. A solo maintainer cannot approve their own PR: do not configure an
-   impossible independent approval requirement.
-7. Verify a clean merge deploys the same commit to Vercel. No Vercel token is
-   required for this Git integration; project settings access verifies the
-   production branch. Do not enable production deploys on other branches.
+   checks on develop and master. Master additionally requires `promotion-policy`,
+   which permits only a same-repository develop → master PR. Require up-to-date
+   branches and PRs; apply rules to administrators, prohibit direct/force pushes
+   and branch deletion, and leave routine bypass lists empty. Bind checks to
+   GitHub Actions. Do not require an impossible self-approval for this solo owner.
+7. Review findings in GitHub, remediate through develop, then promote develop to
+   master only when strict checks pass. Verify Vercel deploys that master commit.
+   Do not merge to master merely to enable schedules while existing serious
+   findings remain. No Vercel token or replacement deployment workflow is needed;
+   project settings access verifies the production branch when promotion is ready.
 
 Native GitHub alerts cover dependency and secret monitoring. Semgrep findings are
 also available in its dashboard. Semgrep Code, Supply Chain and zizmor produce
@@ -86,22 +103,23 @@ History rewriting is a separate reviewed operation; never suppress a live secret
 Full history means fetched, reachable branch/tag history, not deleted or unreachable
 GitHub objects or external forks.
 
-Both exception stores start empty. Add only exact fingerprints printed by the
+Source/dependency findings have no baseline loader and cannot be waived.
+The workflow exception store remains empty during this report-first rollout. Add only exact fingerprints printed by the
 policy checks, with `owner`, a specific `reason` including remediation tracking,
-and real UTC `created` / `expires` dates. Maximum duration: 30 days. Expired,
+and real UTC `created` / `expires` dates. Maximum duration for any future reviewed workflow false-positive exception: 30 days. Expired,
 future-created, duplicate or malformed entries fail the check. Do not renew an
 exception without reviewing the finding. Severity increases and changes in
 dependency exposure produce a different identity.
 
 | Store | Additional fields | Policy |
 | --- | --- | --- |
-| `security/semgrep-baseline.json` | `fingerprint`, `owner`, `reason`, `created`, `expires` | Reviewed code/dependency debt only; no blanket path or rule ignores |
 | `security/exceptions.json` | Same fields plus `scanner: "zizmor"` | Exact workflow finding; mandatory pinning/permissions/checkout rules cannot be exempted |
 
 Semgrep inline suppression is disabled. Do not hide findings with Semgrep platform
 ignore settings: local expiry checks cannot audit arbitrary dashboard suppressions.
 Platform access must remain limited to the security owner. Record existing debt
-with a remediation target; new advisories in unchanged dependencies are detected
+with a remediation target; the inventory is not an accepted-risk baseline. New
+advisories in unchanged dependencies are detected
 by full Supply Chain scans. Scans do not run package-manager builds to resolve
 dependencies. Report unsupported reachability as unknown, never as safe.
 

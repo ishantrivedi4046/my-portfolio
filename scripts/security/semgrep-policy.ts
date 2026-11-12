@@ -1,6 +1,6 @@
 import { createHash } from 'node:crypto';
-import { parseExceptionRecords } from './exception-policy.ts';
 
+// Vendor JSON is untrusted input. Narrow unknown values before reading nested fields.
 type ObjectValue = Record<string, unknown>;
 type Product = 'code' | 'dependencies';
 type SecurityFinding = {
@@ -15,6 +15,8 @@ const asObject = (input: unknown): ObjectValue => {
 
 const textValue = (input: unknown): string => typeof input === 'string' ? input : '';
 
+// SCA advisory severity and legacy SAST rule labels are different vocabularies.
+// Reading only ERROR/WARNING would silently miss high dependency advisories.
 const severityOf = (extra: ObjectValue, dependency: boolean): string => {
   const metadata = asObject(extra.metadata ?? {});
   if (dependency) {
@@ -39,12 +41,14 @@ const severityOf = (extra: ObjectValue, dependency: boolean): string => {
 };
 
 export const parseSemgrep = (input: unknown, product: Product): SecurityFinding[] => {
+  // "No findings" is meaningful only after proving the scan actually ran successfully.
   const report = asObject(input);
   if (!Array.isArray(report.results) || !Array.isArray(report.errors)) throw new Error('Missing Semgrep results/errors arrays');
   if (report.errors.length > 0) throw new Error('Semgrep reported analysis errors: coverage requires review');
   const paths = asObject(report.paths);
   if (!Array.isArray(paths.scanned) || paths.scanned.length === 0) throw new Error('Semgrep scanned no files');
   if (product === 'dependencies') {
+    // A source-only scan is not valid dependency coverage: prove root lockfile resolution.
     if (!Array.isArray(report.subprojects)) throw new Error('Missing Supply Chain dependency coverage');
     const rootProject = report.subprojects.map(asObject).find((project) =>
       Array.isArray(project.dependency_sources) && project.dependency_sources.some((path: unknown) =>
@@ -65,6 +69,7 @@ export const parseSemgrep = (input: unknown, product: Product): SecurityFinding[
     const severity = severityOf(extra, isDependency);
     if (!['HIGH', 'CRITICAL', 'UNKNOWN'].includes(severity)) return [];
     const sca = isDependency ? asObject(extra.sca_info) : {};
+    // Include version/exposure/severity so reports distinguish newly changed risk.
     const identity = isDependency
       ? { dependency: sca.dependency_match, reachable: sca.reachable }
       : { match: extra.fingerprint ?? extra.lines ?? result.start };
@@ -81,5 +86,3 @@ export const parseSemgrep = (input: unknown, product: Product): SecurityFinding[
   });
 };
 
-export const semgrepExceptions = (input: unknown, now = Date.now()): Set<string> =>
-  new Set(parseExceptionRecords(input, now).map((entry) => entry.fingerprint));

@@ -1,3 +1,4 @@
+// Exact finding exceptions are optional, reviewed records; not broad package/path allowlists.
 export type ExceptionRecord = {
   fingerprint: string;
   reason: string;
@@ -7,6 +8,7 @@ export type ExceptionRecord = {
 };
 
 const MAX_EXCEPTION_MS = 30 * 86400000;
+// Restrict dates/identities to predictable formats rather than accepting wildcards.
 const DATE_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
 const FINGERPRINT_PATTERN = /^[a-f0-9]{64}$/;
 
@@ -21,6 +23,7 @@ export const asString = (value: unknown): string => {
 };
 
 const parseDate = (value: unknown): number => {
+  // Round-trip the UTC date: JavaScript otherwise normalizes impossible dates silently.
   const date = asString(value);
   const timestamp = Date.parse(`${date}T00:00:00Z`);
   if (!DATE_PATTERN.test(date) || !Number.isFinite(timestamp)
@@ -39,9 +42,11 @@ export const parseExceptionRecords = (input: unknown, now = Date.now()): Excepti
     seen.add(fingerprint);
     const created = parseDate(entry.created);
     const expires = parseDate(entry.expires);
+    // Reject expired, future-created and indefinite records even in reporting mode.
     if (created > now || expires <= now || expires <= created || expires - created > MAX_EXCEPTION_MS) {
       throw new Error(`Expired, future-created, or over-30-day exception: ${fingerprint}`);
     }
+    // This records accountable ownership; repository review/rules provide authorization.
     if (entry.owner !== 'ishantrivedi4046') throw new Error('Exception requires the security owner');
     return {
       fingerprint, owner: entry.owner, reason: asString(entry.reason),

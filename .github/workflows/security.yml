@@ -1,26 +1,40 @@
 name: Security
 
+# Feature changes enter develop; releases move from develop to master.
+# No path filter: every protected-branch PR must receive the required checks.
 on:
   pull_request:
+    branches: [develop, master]
   push:
-    branches: [master]
+    branches: [develop, master]
   schedule:
+    # 03:00 UTC is 08:30 IST. GitHub schedules run the default branch (master).
     - cron: '0 3 * * *'
+  # Recovery path for missed schedules and on-demand full scans of either branch.
   workflow_dispatch:
 
+# Scanner jobs can read source; only the separate publisher receives write access.
 permissions:
   contents: read
 
+# Bootstrap on develop exposes the complete backlog without accepting/suppressing it.
+# PRs targeting master and scans of master retain strict high/critical enforcement.
+env:
+  FINDING_POLICY: ${{ (github.base_ref || github.ref_name) == 'develop' && 'report' || 'enforce' }}
+
 concurrency:
+  # New PR commits replace stale scans. Scheduled/branch scans are not canceled.
   group: security-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
   semgrep:
+    # The matrix creates two stable check names for separate source/dependency results.
     name: security-${{ matrix.product }}
     runs-on: ubuntu-24.04
     timeout-minutes: 20
     strategy:
+      # A Code failure must not prevent dependency scanning, or vice versa.
       fail-fast: false
       matrix:
         include:
@@ -29,9 +43,11 @@ jobs:
           - product: dependencies
             argument: --supply-chain
     steps:
+      # Full commit SHA pins the Action implementation, not just a mutable version tag.
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
+          # Remove checkout credentials before any scanning or repository scripts run.
           persist-credentials: false
       - name: Require authenticated coverage
         env:
@@ -42,6 +58,7 @@ jobs:
             exit 1
           fi
       - name: Prepare scan metadata
+        # Record the actual merge/branch commit so reports cannot attach to another run.
         run: |
           install -d -m 700 "$RUNNER_TEMP/semgrep-report"
           python3 - <<'PY'
@@ -56,11 +73,19 @@ jobs:
         env:
           SEMGREP_APP_TOKEN: ${{ secrets.SEMGREP_APP_TOKEN }}
           SCAN_ARGUMENT: ${{ matrix.argument }}
+          # The dashboard should identify the feature branch rather than refs/pull/... .
           SEMGREP_BRANCH: ${{ github.head_ref || github.ref_name }}
           SEMGREP_IMAGE: semgrep/semgrep:1.185.0@sha256:67518c174185a2043fdbed16c70631b79209499b3671178e7194379b48295a0d
         # Run only the vendor scanner in the Alpine image. Node policy checks stay
         # on the host. No Docker socket or repository write access in the scanner.
         run: |
+          # Audit mode affects finding severity only; scanner errors still fail.
+          # The process event is push to request full scans rather than PR diffs.
+          if [ "$FINDING_POLICY" = report ]; then
+            set -- --audit-on push
+          else
+            set --
+          fi
           docker run --rm --user "$(id -u):$(id -g)" \
             --cap-drop=ALL --security-opt=no-new-privileges \
             --volume "$GITHUB_WORKSPACE:/src:ro" \
@@ -69,17 +94,20 @@ jobs:
             --env GITHUB_ACTIONS=true --env GITHUB_EVENT_NAME=push \
             --env GITHUB_REPOSITORY --env GITHUB_SHA --env GITHUB_REF \
             --env GITHUB_SERVER_URL --env GITHUB_RUN_ID \
-            "$SEMGREP_IMAGE" semgrep ci "$SCAN_ARGUMENT" \
+            "$SEMGREP_IMAGE" semgrep ci "$SCAN_ARGUMENT" "$@" \
             --no-suppress-errors --disable-nosem --json-output /reports/semgrep-results.json --sarif-output /reports/results.sarif
       - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
+          # Node 24 runs TypeScript tooling directly, without installing npm packages.
           node-version: '24'
           package-manager-cache: false
       - name: Independently enforce severity and expiring baseline
+        # Platform "monitor" policies must not silently disable repository policy.
         env:
           PRODUCT: ${{ matrix.product }}
-        run: node scripts/security/check-semgrep.ts "$RUNNER_TEMP/semgrep-report/semgrep-results.json" "$PRODUCT"
+        run: node scripts/security/check-semgrep.ts "$RUNNER_TEMP/semgrep-report/semgrep-results.json" "$PRODUCT" "$FINDING_POLICY"
       - name: Preserve SARIF reporting inputs
+        # Failed severity checks still need reports. Missing scans remain failed jobs.
         if: always()
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
@@ -88,11 +116,13 @@ jobs:
             ${{ runner.temp }}/semgrep-report/results.sarif
             ${{ runner.temp }}/semgrep-report/scan.json
           if-no-files-found: ignore
+          # Short retention avoids accumulating public-source-context report artifacts.
           retention-days: 3
 
   publish:
     name: security-reporting-${{ matrix.product }}
     needs: [semgrep, workflows]
+    # Fork/bot jobs have restricted tokens; their trusted replacement PR publishes.
     if: >-
       always() && github.actor != 'dependabot[bot]' &&
       (github.event_name != 'pull_request' ||
@@ -101,6 +131,7 @@ jobs:
     timeout-minutes: 10
     permissions:
       contents: read
+      # This permission is confined to this no-checkout, data-only publishing job.
       security-events: write
     strategy:
       fail-fast: false
@@ -112,6 +143,7 @@ jobs:
         uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
         with:
           name: security-sarif-${{ matrix.product }}-${{ github.run_id }}-${{ github.run_attempt }}
+          # No executable from this directory is run; only validated JSON is read.
           path: reports
       - name: Validate report and scanned commit
         id: scan
@@ -132,15 +164,18 @@ jobs:
               output.write(f"sha={metadata['sha']}\nref={ref}\n")
           PY
       - name: Publish findings to GitHub Security
+        # This uses the SARIF uploader only; it does not add the CodeQL scanner.
         uses: github/codeql-action/upload-sarif@33d7b85da1a04171e211befe2c739303b9a4c066 # v4
         with:
           sarif_file: reports/results.sarif
           category: ${{ matrix.product }}
+          # Explicit SHA/ref preserve the association with the commit actually scanned.
           ref: ${{ steps.scan.outputs.ref }}
           sha: ${{ steps.scan.outputs.sha }}
           wait-for-processing: true
 
   secrets:
+    # Secrets are always blocking; historical exposure requires rotation/revocation.
     name: security-secrets
     runs-on: ubuntu-24.04
     timeout-minutes: 10
@@ -150,6 +185,7 @@ jobs:
           fetch-depth: 0
           persist-credentials: false
       - name: Install verified Gitleaks CLI
+        # The free CLI requires no Gitleaks hosted account or Action license.
         env:
           TOOL_URL: https://github.com/gitleaks/gitleaks/releases/download/v8.30.1/gitleaks_8.30.1_linux_x64.tar.gz
           TOOL_SHA256: 551f6fc83ea457d62a0d98237cbad105af8d557003051f41f3e7ca7b3f2470eb
@@ -158,6 +194,7 @@ jobs:
           echo "$TOOL_SHA256  $RUNNER_TEMP/gitleaks.tar.gz" | sha256sum --check --strict
           tar -xzf "$RUNNER_TEMP/gitleaks.tar.gz" -C "$RUNNER_TEMP" gitleaks
       - name: Scan every PR commit
+        # The full merge-base range catches a secret even if a later PR commit deletes it.
         if: github.event_name == 'pull_request'
         env:
           BASE_SHA: ${{ github.event.pull_request.base.sha }}
@@ -166,10 +203,12 @@ jobs:
           MERGE_BASE=$(git merge-base "$BASE_SHA" "$HEAD_SHA")
           "$RUNNER_TEMP/gitleaks" git --redact --exit-code 1 --log-opts="$MERGE_BASE..$HEAD_SHA" --config .gitleaks.toml --ignore-gitleaks-allow --gitleaks-ignore-path /dev/null
       - name: Scan complete available history
+        # fetch-depth: 0 includes reachable branch/tag history; deleted objects are not guaranteed.
         if: github.event_name != 'pull_request'
         run: |
           "$RUNNER_TEMP/gitleaks" git --redact --exit-code 1 --log-opts='--all' --config .gitleaks.toml --ignore-gitleaks-allow --gitleaks-ignore-path /dev/null
       - name: Scan tracked working-tree files, including generated files
+        # git archive avoids ignored local files while keeping tracked generated graphs in scope.
         run: |
           mkdir "$RUNNER_TEMP/tracked-source"
           git archive HEAD | tar -x -C "$RUNNER_TEMP/tracked-source"
@@ -184,6 +223,7 @@ jobs:
         with:
           persist-credentials: false
       - name: Install verified zizmor CLI
+        # Pin both release and SHA-256; never execute an unchecked downloaded binary.
         env:
           TOOL_URL: https://github.com/zizmorcore/zizmor/releases/download/v1.32.0/zizmor-x86_64-unknown-linux-gnu.tar.gz
           TOOL_SHA256: bb110cc765eca9cd7efb2e284a956be5974c60027b0970f16397d86208a9957b
@@ -203,6 +243,7 @@ jobs:
       - name: Test security policy enforcement
         run: node --test scripts/security/*.test.ts
       - name: Prepare workflow security report
+        # SARIF is for the GitHub UI; JSON above drives the blocking policy separately.
         if: always()
         run: |
           install -d -m 700 "$RUNNER_TEMP/workflow-report"

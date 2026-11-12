@@ -1,0 +1,31 @@
+# Release routing is independent of scanner success: only develop promotes to master.
+name: Branch promotion policy
+
+on:
+  pull_request:
+    # Feature PRs into develop are allowed; only production-bound PRs need this guard.
+    branches: [master]
+
+# The guard reads event metadata and needs no source checkout, secrets, or write token.
+permissions: {}
+
+jobs:
+  promotion:
+    # This name is required only by the master ruleset, not by the develop ruleset.
+    name: promotion-policy
+    runs-on: ubuntu-24.04
+    # This is a tiny metadata check; a stuck runner should stop quickly.
+    timeout-minutes: 2
+    steps:
+      - name: Require same-repository develop promotion
+        env:
+          # Pass branch names as data, never interpolate PR text into shell code.
+          HEAD_BRANCH: ${{ github.head_ref }}
+          HEAD_REPOSITORY: ${{ github.event.pull_request.head.repo.full_name }}
+        run: |
+          # A fork named develop must not impersonate this repository's integration branch.
+          if [ "$HEAD_BRANCH" != develop ] || [ "$HEAD_REPOSITORY" != "$GITHUB_REPOSITORY" ]; then
+            echo '::error::Merge feature and dependency changes into develop first, then open develop → master.'
+            exit 1
+          fi
+          echo 'Release promotion follows develop → master.'

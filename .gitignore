@@ -42,3 +42,6 @@ next-env.d.ts
 /graphify-out/.graphify_root
 /graphify-out/.graphify_labels.json.sig
 /graphify-out/.graphify_labels.pending.json
+
+# Temporary, automatically deleted fixtures used by security CLI integration tests.
+/.security-test-*/

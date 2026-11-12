@@ -1,9 +1,9 @@
 # Initial dependency security debt
 
-Status: review pending; no exceptions applied.
+Status: visible for review; source/dependency findings report on develop and block master. No exceptions applied.
 
 Initial full Supply Chain scan on 2026-11-12 resolved 389 dependencies and reported 142 findings.
-The independent repository policy blocks 73 findings: 67 high and 6 critical.
+The independent repository policy identifies 73 promotion-blocking findings: 67 high and 6 critical.
 These findings predate this infrastructure change; the npm manifest and lockfile are unchanged.
 
 Evidence: [full scan and exact fingerprint logs](https://github.com/ishantrivedi4046/my-portfolio/actions/runs/43190255615).
@@ -38,12 +38,12 @@ Scanner reachability output does not establish exploitability or absence of risk
 
 ## Decision and remediation
 
-Security owner: `ishantrivedi4046`. The owner is choosing between remediation before
-enforcement and exact-fingerprint baseline exceptions lasting no more than 30 days.
-If a baseline is approved, record the acceptance, creation/expiry dates, reason and
-remediation target for every accepted identity in `security/semgrep-baseline.json`.
-New advisories, severity increases and changed exposure remain blocking. Do not
-convert this inventory into broad rule or package allowlists.
+Security owner: `ishantrivedi4046`. The owner selected report-only source/dependency
+findings on develop and strict enforcement on master. Install reporting first,
+review the GitHub findings, then fix them through develop before production
+promotion. This inventory records existing debt, not accepted risk. No source/dependency baseline loader exists; the workflow exception store remains
+empty; no expiry/baseline waiver is used to make the setup mergeable.
+New and existing high/critical findings continue to block master.
 
 Resolve direct dependency advisories through reviewed compatible updates; evaluate
 transitive fixes with their parent dependency. Keep framework upgrades separate

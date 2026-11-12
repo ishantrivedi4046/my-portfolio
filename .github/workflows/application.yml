@@ -1,33 +1,50 @@
+# The label shown in the Actions tab; the job below has a stable required-check name.
 name: Application validation
 
+# Validate changes before integration and again on both integration/release branches.
 on:
   pull_request:
+    branches: [develop, master]
   push:
-    branches: [master]
+    branches: [develop, master]
+  # Lets the owner rerun validation without creating an artificial code change.
   workflow_dispatch:
 
+# Building needs source access, never permission to change the repository.
 permissions:
   contents: read
 
+# Replace stale PR builds, but let branch builds finish for an auditable result.
 concurrency:
   group: application-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
   application:
+    # Rulesets refer to this exact name; renaming it also requires updating rulesets.
     name: application-validation
+    # GitHub hosts the runner; no server or long-lived runner credentials are needed.
     runs-on: ubuntu-24.04
+    # A broken install/build cannot consume runner time indefinitely.
     timeout-minutes: 15
     steps:
+      # Immutable Action commits prevent a moved release tag from changing CI code.
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
+          # npm/build commands must not inherit a reusable Git credential.
           persist-credentials: false
       - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
+          # Node 22 is the application runtime; tooling tests use Node 24 separately.
           node-version: '22'
+          # Avoid implicit dependency caching across untrusted PR and branch runs.
           package-manager-cache: false
+      # Install exactly the committed lockfile; fail if it disagrees with package.json.
       - run: npm ci
+      # Security scripts have their own Node-oriented TypeScript configuration.
       - name: Type-check isolated security tooling
         run: npx --no-install tsc --project scripts/security/tsconfig.json
+      # Existing React lint rules still apply to dependency and infrastructure PRs.
       - run: npm run lint
+      # Compilation catches dependency incompatibilities that scanners cannot detect.
       - run: npm run build
