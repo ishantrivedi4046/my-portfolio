@@ -25,3 +25,13 @@ test('the actual promotion guard allows only same-repository develop', () => {
     assert.equal(result.status, expected, result.stderr);
   }
 });
+
+test('changing a PR target reruns all target-dependent policies', () => {
+  // Without edited events, an earlier develop reporting result could outlive retargeting.
+  for (const file of ['security.yml', 'application.yml', 'branch-policy.yml']) {
+    const workflow = readFileSync(`.github/workflows/${file}`, 'utf8');
+    const prBlock = workflow.split('  pull_request:\n')[1]?.split(/\n  \w/)[0];
+    assert.ok(prBlock, `${file} must handle pull requests`);
+    assert.match(prBlock, /types: \[[^\]]*\bedited\b[^\]]*\]/, `${file} must rerun on target edits`);
+  }
+});

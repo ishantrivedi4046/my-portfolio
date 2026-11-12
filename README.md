@@ -37,7 +37,9 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/deploym
 
 ## Security reports and branch flow
 
-Changes enter `develop` first, then promote to `master` for Vercel production.
+The repository default and new-PR target is `develop`. Changes enter it first,
+then promote to `master` for Vercel production. Both version-update and security-fix
+Dependabot PRs target develop. Daily scans run on default develop.
 During setup, source/dependency findings are reported on develop and enforced on
 master. Secrets, broken scanners, unsafe workflows and build failures still block
 both branches. No findings have been baselined.
@@ -48,5 +50,5 @@ both branches. No findings have been baselined.
 - [Configuration explained](docs/security-configuration-guide.md)
 - [Operations and recovery](docs/security-scanning.md)
 
-Select the develop branch (or the infrastructure PR before merge) when reviewing
-code-scanning results. Dependency fixes follow the same develop → master flow.
+Code-scanning results default to develop. Dependency fixes follow the same
+develop → master flow; PR target changes automatically rerun the relevant checks.

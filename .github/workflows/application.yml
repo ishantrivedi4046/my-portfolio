@@ -5,6 +5,8 @@ name: Application validation
 on:
   pull_request:
     branches: [develop, master]
+    # A different target branch changes the merge result even when the head SHA is unchanged.
+    types: [opened, synchronize, reopened, edited, ready_for_review]
   push:
     branches: [develop, master]
   # Lets the owner rerun validation without creating an artificial code change.
