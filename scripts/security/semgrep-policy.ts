@@ -3,7 +3,10 @@ import { parseExceptionRecords } from './exception-policy.ts';
 
 type ObjectValue = Record<string, unknown>;
 type Product = 'code' | 'dependencies';
-type SecurityFinding = { fingerprint: string; rule: string; path: string; severity: string };
+type SecurityFinding = {
+  fingerprint: string; rule: string; path: string; severity: string;
+  advisory: string; dependency: string; reachable: string;
+};
 
 const asObject = (input: unknown): ObjectValue => {
   if (input === null || typeof input !== 'object' || Array.isArray(input)) throw new Error('Invalid Semgrep report object');
@@ -66,7 +69,15 @@ export const parseSemgrep = (input: unknown, product: Product): SecurityFinding[
       ? { dependency: sca.dependency_match, reachable: sca.reachable }
       : { match: extra.fingerprint ?? extra.lines ?? result.start };
     const fingerprint = createHash('sha256').update(JSON.stringify({ product, rule, path, severity, identity })).digest('hex');
-    return [{ fingerprint, rule, path, severity }];
+    const metadata = asObject(extra.metadata ?? {});
+    const match = isDependency ? asObject(sca.dependency_match ?? {}) : {};
+    const dependency = asObject(match.found_dependency ?? {});
+    return [{
+      fingerprint, rule, path, severity,
+      advisory: textValue(metadata['sca-vuln-name']) || rule,
+      dependency: isDependency ? `${textValue(dependency.package)}@${textValue(dependency.version)}` : '',
+      reachable: typeof sca.reachable === 'boolean' ? String(sca.reachable) : 'unknown',
+    }];
   });
 };
 
