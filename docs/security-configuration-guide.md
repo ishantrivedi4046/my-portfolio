@@ -22,7 +22,7 @@ feature or dependency branch → develop → master → Vercel production
 - The master-only promotion guard requires the same repository's develop branch.
   It rejects feature branches and forks that happen to use the name develop.
 - The rulesets require PRs and block direct/force pushes and branch deletion.
-  Rulesets remain disabled until the checks are verified for the corrected flow.
+  Rulesets are activated only after the checks are verified for this flow.
 
 GitHub schedules run only from the default branch, currently master. Until this
 infrastructure reaches master, use pushes or **Actions → Security → Run workflow →

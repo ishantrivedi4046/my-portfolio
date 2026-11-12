@@ -101,7 +101,7 @@ jobs:
           # Node 24 runs TypeScript tooling directly, without installing npm packages.
           node-version: '24'
           package-manager-cache: false
-      - name: Independently enforce severity and expiring baseline
+      - name: Apply branch finding policy after validating coverage
         # Platform "monitor" policies must not silently disable repository policy.
         env:
           PRODUCT: ${{ matrix.product }}
